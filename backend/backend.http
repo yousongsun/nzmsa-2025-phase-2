@@ -1,6 +1,90 @@
 @backend_HostAddress = http://localhost:5042
 
-GET {{backend_HostAddress}}/weatherforecast/
+###
+# Users
+###
+
+# GET all users
+GET {{backend_HostAddress}}/api/users
 Accept: application/json
+
+###
+
+# POST create a new user
+POST {{backend_HostAddress}}/api/users
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+###
+
+# GET user by id
+GET {{backend_HostAddress}}/api/users/1
+Accept: application/json
+
+###
+
+# PUT update user
+PUT {{backend_HostAddress}}/api/users/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "firstName": "Kate",
+  "lastName": "Smith",
+  "email": "updated@example.com",
+  "password": "newpassword"
+}
+
+###
+
+# DELETE user by id
+DELETE {{backend_HostAddress}}/api/users/1
+Accept: application/json
+
+###
+
+# POST user login
+POST {{backend_HostAddress}}/api/users/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+###
+
+# GET check if email exists
+GET {{backend_HostAddress}}/api/users/exists?email=test@example.com
+Accept: application/json
+
+###
+
+# GET user login
+GET {{backend_HostAddress}}/api/users/login?email=test@example.com&password=password123
+Accept: application/json
+
+###
+
+# POST bulk create users
+POST {{backend_HostAddress}}/api/users/bulk
+Content-Type: application/json
+
+[
+  {
+    "email": "test1@example.com",
+    "password": "password1"
+  },
+  {
+    "email": "test2@example.com",
+    "password": "password2"
+  }
+]
 
 ###
