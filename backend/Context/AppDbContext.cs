@@ -19,6 +19,7 @@ namespace backend.Context
                 entity.ToTable("Users");
                 entity.HasKey(e => e.Id);
                 entity.HasIndex(e => e.Id);
+                entity.HasIndex(e => e.Email).IsUnique();
             });
 
         }

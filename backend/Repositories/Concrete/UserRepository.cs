@@ -55,6 +55,11 @@ namespace backend.Repositories.Concrete
 
         public async Task AddUserAsync(User user)
         {
+            if (user.Email != null && await EmailExists(user.Email))
+            {
+                throw new InvalidOperationException($"A user with email '{user.Email}' already exists.");
+            }
+
             // Hash the password before saving
             if (!string.IsNullOrEmpty(user.Password))
             {

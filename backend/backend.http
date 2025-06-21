@@ -78,10 +78,14 @@ Content-Type: application/json
 
 [
   {
+    "firstName": "John",
+    "lastName": "Doe",
     "email": "test1@example.com",
     "password": "password1"
   },
   {
+    "firstName": "Jane",
+    "lastName": "Doe",
     "email": "test2@example.com",
     "password": "password2"
   }
