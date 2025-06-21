@@ -16,17 +16,30 @@ namespace backend.Controllers
             _repository = repository;
         }
 
+        private static UserResponse ToUserResponse(User user)
+        {
+            return new UserResponse
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Description = user.Description
+            };
+        }
+
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserResponse>>> GetUsers()
         {
             var users = await _repository.GetAllUsersAsync();
-            return Ok(users);
+            var result = users.Select(ToUserResponse);
+            return Ok(result);
         }
 
         // GET: api/Users/login
         [HttpGet("login")]
-        public async Task<ActionResult<User>> GetUsersLogin([FromQuery] string email, [FromQuery] string password)
+        public async Task<ActionResult<UserResponse>> GetUsersLogin([FromQuery] string email, [FromQuery] string password)
         {
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
@@ -44,20 +57,12 @@ namespace backend.Controllers
             }
 
             // Return the user, but exclude sensitive information
-            var userResponse = new
-            {
-                user.Id,
-                user.Email,
-                // Exclude the password and other sensitive information
-                // Add other user properties as needed
-            };
-
-            return Ok(userResponse);
+            return Ok(ToUserResponse(user));
         }
 
         // POST: api/Users/login
         [HttpPost("login")]
-        public async Task<ActionResult<UserLogin>> PostUsersLogin(UserLogin userLogin)
+        public async Task<ActionResult<UserResponse>> PostUsersLogin(UserLogin userLogin)
         {
             if (string.IsNullOrEmpty(userLogin.Email) || string.IsNullOrEmpty(userLogin.Password))
             {
@@ -75,15 +80,7 @@ namespace backend.Controllers
             }
 
             // Return the user, but exclude sensitive information
-            var userResponse = new
-            {
-                user.Id,
-                user.Email,
-                // Exclude the password and other sensitive information
-                // Add other user properties as needed
-            };
-
-            return Ok(userResponse);
+            return Ok(ToUserResponse(user));
         }
 
 
@@ -108,7 +105,7 @@ namespace backend.Controllers
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(long id)
+        public async Task<ActionResult<UserResponse>> GetUser(long id)
         {
             var user = await _repository.GetUserByIdAsync(id);
 
@@ -117,7 +114,7 @@ namespace backend.Controllers
                 return NotFound();
             }
 
-            return Ok(user);
+            return Ok(ToUserResponse(user));
         }
 
         // PUT: api/Users/5
@@ -150,10 +147,10 @@ namespace backend.Controllers
 
         // POST: api/Users
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<UserResponse>> PostUser(User user)
         {
             await _repository.AddUserAsync(user);
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            return CreatedAtAction("GetUser", new { id = user.Id }, ToUserResponse(user));
         }
 
         // DELETE: api/Users/5
@@ -173,16 +170,24 @@ namespace backend.Controllers
 
         // POST: api/Users/bulk
         [HttpPost("bulk")]
-        public async Task<ActionResult<IEnumerable<User>>> BulkCreateUsers(IEnumerable<User> users)
+        public async Task<ActionResult<IEnumerable<UserResponse>>> BulkCreateUsers(IEnumerable<User> users)
         {
             if (users == null || !users.Any())
             {
                 return BadRequest("User data is required.");
             }
 
-            await _repository.BulkAddUsersAsync(users);
+            try
+            {
+                await _repository.BulkAddUsersAsync(users);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
 
-            return Ok(users);
+            var result = users.Select(ToUserResponse);
+            return Ok(result);
         }
     }
 }

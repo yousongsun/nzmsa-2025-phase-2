@@ -36,10 +36,18 @@ namespace backend.Repositories.Concrete
                 var passwordHasher = new PasswordHasher<string>();
                 if (!string.IsNullOrEmpty(user.Password))
                 {
-                    var passwordVerificationResult = passwordHasher.VerifyHashedPassword(string.Empty, user.Password, password);
+                    var verification = passwordHasher.VerifyHashedPassword(string.Empty, user.Password, password);
 
-                    if (passwordVerificationResult == PasswordVerificationResult.Success)
+                    if (verification == PasswordVerificationResult.Success)
                     {
+                        return user;
+                    }
+
+                    if (user.Password == password)
+                    {
+                        // migrate plain-text password to hashed version
+                        user.Password = passwordHasher.HashPassword(string.Empty, password);
+                        await _context.SaveChangesAsync();
                         return user;
                     }
                 }
@@ -78,6 +86,11 @@ namespace backend.Repositories.Concrete
 
         public async Task UpdateUserAsync(User user)
         {
+            if (!string.IsNullOrEmpty(user.Password))
+            {
+                user.Password = HashPassword(user.Password);
+            }
+
             _context.Entry(user).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
@@ -99,7 +112,46 @@ namespace backend.Repositories.Concrete
 
         public async Task BulkAddUsersAsync(IEnumerable<User> users)
         {
-            await _context.Users.AddRangeAsync(users);
+            var userList = users.ToList();
+
+            // check for duplicate emails in provided list
+            var duplicateEmails = userList
+                .Where(u => u.Email != null)
+                .GroupBy(u => u.Email!.ToLowerInvariant())
+                .Where(g => g.Count() > 1)
+                .Select(g => g.Key)
+                .ToList();
+
+            if (duplicateEmails.Any())
+            {
+                throw new InvalidOperationException($"Duplicate emails provided: {string.Join(", ", duplicateEmails)}");
+            }
+
+            // check for existing emails in DB
+            var emails = userList.Where(u => u.Email != null)
+                                 .Select(u => u.Email)
+                                 .ToList();
+
+            var existingEmails = await _context.Users
+                .Where(u => emails.Contains(u.Email))
+                .Select(u => u.Email)
+                .ToListAsync();
+
+            if (existingEmails.Any())
+            {
+                throw new InvalidOperationException($"Users with emails already exist: {string.Join(", ", existingEmails)}");
+            }
+
+            // hash passwords
+            foreach (var user in userList)
+            {
+                if (!string.IsNullOrEmpty(user.Password))
+                {
+                    user.Password = HashPassword(user.Password);
+                }
+            }
+
+            await _context.Users.AddRangeAsync(userList);
             await _context.SaveChangesAsync();
         }
     }
