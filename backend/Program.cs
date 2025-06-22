@@ -2,10 +2,14 @@ using backend.Context;
 using backend.Repositories.Abstract;
 using backend.Repositories.Concrete;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+// Declare flag here so it's visible both when registering and initializing
+var useSqlServer = false;
 
 // Configure DbContext Entity Framework Core
 if (builder.Environment.IsDevelopment())
@@ -15,9 +19,33 @@ if (builder.Environment.IsDevelopment())
 }
 else
 {
+    var sqlConnectionString = builder.Configuration.GetConnectionString("AppDbContext");
+
+    if (!string.IsNullOrEmpty(sqlConnectionString))
+    {
+        try
+        {
+            using var connection = new SqlConnection(sqlConnectionString);
+            connection.Open();
+            useSqlServer = true;
+        }
+        catch (SqlException)
+        {
+            // If connection fails, fallback to SQLite
+            useSqlServer = false;
+            Console.WriteLine("SQL Server connection failed, using SQLite instead. SQL Server connection failed, using SQLite instead. SQL Server connection failed, using SQLite instead.");
+        }
+    }
+
     builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("AppDbContext") ?? throw new InvalidOperationException("Connection string 'AppDbContext' not found.")));
+    {
+        if (useSqlServer)
+            options.UseSqlServer(sqlConnectionString!);
+        else
+            options.UseSqlite("Data Source=AppDbContext.db");
+    });
 }
+
 // Register the repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
@@ -45,8 +73,17 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    dbContext.Database.EnsureCreated();
-    // dbContext.Database.Migrate();
+
+    if (useSqlServer)
+    {
+        // apply pending migrations on SQL Server
+        dbContext.Database.Migrate();
+    }
+    else
+    {
+        // create SQLite or in-memory schema
+        dbContext.Database.EnsureCreated();
+    }
 }
 
 // Configure Middleware
