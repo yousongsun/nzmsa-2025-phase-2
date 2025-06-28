@@ -57,7 +57,9 @@ builder.Services.AddCors(options =>
         {
             policy.WithOrigins("http://localhost:5173")
                   .AllowAnyHeader()
-                  .AllowAnyMethod();
+                .AllowAnyMethod()
+                .SetIsOriginAllowed(origin => true)
+                .AllowCredentials();
         });
 });
 
@@ -88,15 +90,15 @@ using (var scope = app.Services.CreateScope())
 
 // Configure Middleware
 
-// Enable CORS
-app.UseCors("AllowReactApp");
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Enable CORS
+app.UseCors("AllowReactApp");
 
 app.UseHttpsRedirection();
 
