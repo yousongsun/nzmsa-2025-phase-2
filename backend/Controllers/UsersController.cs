@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using backend.Models;
+using backend.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace backend.Controllers
 {
@@ -10,17 +12,19 @@ namespace backend.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _repository;
+        private readonly TokenService _tokenService;
 
-        public UsersController(IUserRepository repository)
+        public UsersController(IUserRepository repository, TokenService tokenService)
         {
             _repository = repository;
+            _tokenService = tokenService;
         }
 
         private static UserResponse ToUserResponse(User user)
         {
             return new UserResponse
             {
-                Id = user.Id,
+                UserId = user.UserId,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
@@ -30,6 +34,7 @@ namespace backend.Controllers
 
         // GET: api/Users
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<UserResponse>>> GetUsers()
         {
             var users = await _repository.GetAllUsersAsync();
@@ -37,32 +42,10 @@ namespace backend.Controllers
             return Ok(result);
         }
 
-        // GET: api/Users/login
-        [HttpGet("login")]
-        public async Task<ActionResult<UserResponse>> GetUsersLogin([FromQuery] string email, [FromQuery] string password)
-        {
-            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
-            {
-                // Return a BadRequest response if email or password is missing
-                return BadRequest("Email and password are required.");
-            }
-
-            // Fetch the user by email and password
-            var user = await _repository.GetUserByEmailPasswordAsync(email, password);
-
-            if (user == null)
-            {
-                // Return NotFound if no matching user is found
-                return NotFound("Invalid email or password.");
-            }
-
-            // Return the user, but exclude sensitive information
-            return Ok(ToUserResponse(user));
-        }
-
         // POST: api/Users/login
         [HttpPost("login")]
-        public async Task<ActionResult<UserResponse>> PostUsersLogin(UserLogin userLogin)
+        [AllowAnonymous]
+        public async Task<ActionResult<UserLoginResponse>> PostUsersLogin(UserLogin userLogin)
         {
             if (string.IsNullOrEmpty(userLogin.Email) || string.IsNullOrEmpty(userLogin.Password))
             {
@@ -79,14 +62,35 @@ namespace backend.Controllers
                 return NotFound("Invalid email or password.");
             }
 
-            // Return the user, but exclude sensitive information
+            var token = _tokenService.GenerateToken(user);
+
+            return Ok(new UserLoginResponse { UserId = user.UserId, Email = user.Email, Token = token });
+        }
+
+        // GET: api/Users/by-email
+        [HttpGet("by-email")]
+        [Authorize]
+        public async Task<ActionResult<UserResponse>> GetUserByEmail([FromQuery] string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                return BadRequest("Email is required.");
+            }
+
+            var user = await _repository.GetUserByEmailAsync(email);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
             return Ok(ToUserResponse(user));
         }
 
-
         // GET: api/Users/exists
         [HttpGet("exists")]
-        public async Task<ActionResult<User>> GetEmailExists([FromQuery] string email)
+        [AllowAnonymous]
+        public async Task<ActionResult<bool>> GetEmailExists([FromQuery] string email)
         {
             if (string.IsNullOrEmpty(email))
             {
@@ -121,7 +125,7 @@ namespace backend.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(long id, User user)
         {
-            if (id != user.Id)
+            if (id != user.UserId)
             {
                 return BadRequest();
             }
@@ -147,10 +151,11 @@ namespace backend.Controllers
 
         // POST: api/Users
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult<UserResponse>> PostUser(User user)
         {
             await _repository.AddUserAsync(user);
-            return CreatedAtAction("GetUser", new { id = user.Id }, ToUserResponse(user));
+            return CreatedAtAction("GetUser", new { id = user.UserId }, ToUserResponse(user));
         }
 
         // DELETE: api/Users/5

@@ -8,6 +8,7 @@ namespace backend.Repositories.Abstract
         Task<User> GetUserByIdAsync(long id);
         Task<User> GetUserByEmailPasswordAsync(string email, string password);
         Task<bool> EmailExists(string email);
+        Task<User?> GetUserByEmailAsync(string email);
         Task AddUserAsync(User user);
         Task UpdateUserAsync(User user);
         Task DeleteUserAsync(long id);

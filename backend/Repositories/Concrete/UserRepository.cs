@@ -61,6 +61,12 @@ namespace backend.Repositories.Concrete
             return await _context.Users.AnyAsync(u => u.Email == email);
         }
 
+        public async Task<User?> GetUserByEmailAsync(string email)
+        {
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == email);
+            return user;
+        }
+
         public async Task AddUserAsync(User user)
         {
             if (user.Email != null && await EmailExists(user.Email))
@@ -107,7 +113,7 @@ namespace backend.Repositories.Concrete
 
         public async Task<bool> UserExistsAsync(long id)
         {
-            return await _context.Users.AnyAsync(e => e.Id == id);
+            return await _context.Users.AnyAsync(e => e.UserId == id);
         }
 
         public async Task BulkAddUsersAsync(IEnumerable<User> users)
