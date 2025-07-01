@@ -12,7 +12,7 @@ namespace backend.Context
 
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<Trip> Trips { get; set; } = null!;
-
+        public DbSet<ItineraryItem> ItineraryItems { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,6 +29,17 @@ namespace backend.Context
                     .HasForeignKey(e => e.UserId);
             });
 
+            // Configure ItineraryItem entity
+            modelBuilder.Entity<ItineraryItem>(entity =>
+            {
+                entity.HasKey(e => e.ItineraryItemId);
+                entity.Property(e => e.Name).IsRequired();
+                entity.HasOne(e => e.Trip)
+                    .WithMany(t => t.ItineraryItems)
+                    .HasForeignKey(e => e.TripId);
+            });
+
+            
         }
     }
 }
