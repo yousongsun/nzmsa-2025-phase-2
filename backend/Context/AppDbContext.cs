@@ -11,18 +11,24 @@ namespace backend.Context
         }
 
         public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Trip> Trips { get; set; } = null!;
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>(entity =>
+            base.OnModelCreating(modelBuilder);
+
+            // Configure Trip entity
+            modelBuilder.Entity<Trip>(entity =>
             {
-                entity.ToTable("Users");
-                entity.HasKey(e => e.Id);
-                entity.HasIndex(e => e.Id);
-                entity.HasIndex(e => e.Email).IsUnique();
+                entity.HasKey(e => e.TripId);
+                entity.Property(e => e.Name).IsRequired();
+                entity.Property(e => e.Destination).IsRequired();
+                entity.HasOne(e => e.User)
+                    .WithMany(u => u.Trips)
+                    .HasForeignKey(e => e.UserId);
             });
 
         }
-
     }
 }
