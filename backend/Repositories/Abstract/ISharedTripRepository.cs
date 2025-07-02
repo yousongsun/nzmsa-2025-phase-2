@@ -13,4 +13,4 @@ namespace backend.Repositories.Abstract
         Task<SharedTrip> UpdateAsync(SharedTrip sharedTrip);
         Task DeleteAsync(long id);
     }
-} 
+}

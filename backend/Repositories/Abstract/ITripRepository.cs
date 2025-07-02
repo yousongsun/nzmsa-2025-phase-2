@@ -14,4 +14,4 @@ namespace backend.Repositories.Abstract
         Task<Trip> UpdateAsync(Trip trip);
         Task DeleteAsync(long id);
     }
-} 
+}

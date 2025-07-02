@@ -25,4 +25,4 @@ namespace backend.Models
 
         public Trip? Trip { get; set; }
     }
-} 
+}

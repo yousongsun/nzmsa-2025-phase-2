@@ -24,4 +24,4 @@ namespace backend.Models
 
         public ICollection<ItineraryItem> ItineraryItems { get; set; } = new List<ItineraryItem>();
     }
-} 
+}

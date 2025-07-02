@@ -13,4 +13,4 @@ namespace backend.Repositories.Abstract
         Task<ItineraryItem> UpdateAsync(ItineraryItem itineraryItem);
         Task DeleteAsync(long id);
     }
-} 
+}

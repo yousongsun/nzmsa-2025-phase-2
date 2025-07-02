@@ -66,4 +66,4 @@ namespace backend.Repositories.Concrete
             return await _context.Trips.AnyAsync(e => e.TripId == id);
         }
     }
-} 
+}

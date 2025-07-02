@@ -24,4 +24,4 @@ namespace backend.Models
         [Required]
         public PermissionLevel PermissionLevel { get; set; }
     }
-} 
+}

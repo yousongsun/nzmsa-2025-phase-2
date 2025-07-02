@@ -53,6 +53,19 @@ namespace backend.Context
                     .HasForeignKey(e => e.UserId);
             });
 
+            // Configure Follow entity
+            modelBuilder.Entity<Follow>(entity =>
+            {
+                entity.HasKey(e => e.FollowId);
+                entity.HasOne(e => e.Follower)
+                    .WithMany()
+                    .HasForeignKey(e => e.FollowerId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                entity.HasOne(e => e.Following)
+                    .WithMany()
+                    .HasForeignKey(e => e.FollowingId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
         }
     }
 }
