@@ -54,6 +54,7 @@ else
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITripRepository, TripRepository>();
 builder.Services.AddScoped<IItineraryItemRepository, ItineraryItemRepository>();
+builder.Services.AddScoped<ISharedTripRepository, SharedTripRepository>();
 builder.Services.AddScoped<TokenService>();
 
 // Configure CORS

@@ -13,6 +13,8 @@ namespace backend.Context
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<Trip> Trips { get; set; } = null!;
         public DbSet<ItineraryItem> ItineraryItems { get; set; } = null!;
+        public DbSet<SharedTrip> SharedTrips { get; set; } = null!;
+        public DbSet<Follow> Follows { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,7 +41,18 @@ namespace backend.Context
                     .HasForeignKey(e => e.TripId);
             });
 
-            
+            // Configure SharedTrip entity
+            modelBuilder.Entity<SharedTrip>(entity =>
+            {
+                entity.HasKey(e => e.SharedTripId);
+                entity.HasOne(e => e.Trip)
+                    .WithMany()
+                    .HasForeignKey(e => e.TripId);
+                entity.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId);
+            });
+
         }
     }
 }
