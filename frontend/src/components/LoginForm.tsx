@@ -1,5 +1,6 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -23,12 +24,20 @@ export function LoginForm({
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
 	const [success, setSuccess] = useState(false);
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (isLoggedIn) {
+			navigate("/dashboard");
+		}
+	}, [isLoggedIn, navigate]);
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setError("");
 		try {
-			await axios.post(
+			const response = await axios.post(
 				`${API_BASE_URL}/api/users/login`,
 				{ email, password },
 				{ withCredentials: true },
@@ -36,6 +45,8 @@ export function LoginForm({
 			setSuccess(true);
 			setEmail("");
 			setPassword("");
+			localStorage.setItem("token", response.data.token);
+			setIsLoggedIn(true);
 		} catch (err) {
 			setError(
 				(err as Error).message ||
@@ -88,7 +99,7 @@ export function LoginForm({
 						{error && <p className="mt-4 text-sm text-red-500">{error}</p>}
 						{!error && success && (
 							<p className="mt-4 text-sm text-green-600">
-								Logged in successfully
+								Logged in successfully! Redirecting...
 							</p>
 						)}
 						<div className="mt-4 text-center text-sm">
