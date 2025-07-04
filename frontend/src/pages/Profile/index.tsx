@@ -63,7 +63,7 @@ const Profile = () => {
 				<h1 className="text-2xl font-bold">
 					{user.firstName} {user.lastName}
 				</h1>
-				{currentUserId !== user.id && (
+				{currentUserId !== user.userId && (
 					<Button
 						onClick={isFollowingUser ? handleUnfollow : handleFollow}
 						className="ml-4"
@@ -79,7 +79,7 @@ const Profile = () => {
 				<h2 className="text-xl font-bold">Followers ({followers.length})</h2>
 				<ul>
 					{followers.map((follower) => (
-						<li key={follower.id} className="p-4 border-b">
+						<li key={follower.userId} className="p-4 border-b">
 							{follower.firstName} {follower.lastName}
 						</li>
 					))}
@@ -90,7 +90,7 @@ const Profile = () => {
 				<h2 className="text-xl font-bold">Following ({following.length})</h2>
 				<ul>
 					{following.map((followedUser) => (
-						<li key={followedUser.id} className="p-4 border-b">
+						<li key={followedUser.userId} className="p-4 border-b">
 							{followedUser.firstName} {followedUser.lastName}
 						</li>
 					))}

@@ -35,7 +35,7 @@ export function ShareTripForm({
 		try {
 			const user = await getUserByEmail(email);
 			const newSharedTrip = await createSharedTrip(tripId, {
-				userId: user.id,
+				userId: user.userId,
 				permissionLevel,
 			});
 			onSharedTripCreated(newSharedTrip);

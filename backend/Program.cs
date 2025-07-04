@@ -37,7 +37,7 @@ else
         {
             // If connection fails, fallback to SQLite
             useSqlServer = false;
-            Console.WriteLine("SQL Server connection failed, using SQLite instead. SQL Server connection failed, using SQLite instead. SQL Server connection failed, using SQLite instead.");
+            Console.WriteLine("SQL Server connection failed, using SQLite instead.");
         }
     }
 

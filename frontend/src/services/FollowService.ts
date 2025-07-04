@@ -54,5 +54,5 @@ export const isFollowing = async (
 		getAuthHeaders(),
 	);
 	const followers: User[] = response.data;
-	return followers.some((follower) => follower.id === followerId);
+	return followers.some((follower) => follower.userId === followerId);
 };
