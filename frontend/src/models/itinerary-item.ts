@@ -14,4 +14,8 @@ export interface ItineraryItem {
 	startTime: string;
 	endTime: string;
 	tripId: number;
+	// Location coordinates for map markers
+	latitude?: number;
+	longitude?: number;
+	address?: string;
 }

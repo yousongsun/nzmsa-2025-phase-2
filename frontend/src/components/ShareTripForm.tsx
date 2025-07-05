@@ -32,20 +32,20 @@ export function ShareTripForm({
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setError("");
-                try {
-                        const user = await getUserByEmail(email);
-                        const newSharedTrip = await createSharedTrip(tripId, {
-                                userId: user.userId,
-                                permissionLevel,
-                        });
-                        onSharedTripCreated(newSharedTrip);
-                } catch (err) {
-                        const message =
-                                (err as Error).message ||
-                                "An error occurred while sharing the trip. Please try again";
-                        setError(message);
-                }
-        };
+		try {
+			const user = await getUserByEmail(email);
+			const newSharedTrip = await createSharedTrip(tripId, {
+				userId: user.userId,
+				permissionLevel,
+			});
+			onSharedTripCreated(newSharedTrip);
+		} catch (err) {
+			const message =
+				(err as Error).message ||
+				"An error occurred while sharing the trip. Please try again";
+			setError(message);
+		}
+	};
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-4">

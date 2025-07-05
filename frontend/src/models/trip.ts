@@ -5,4 +5,7 @@ export interface Trip {
 	startDate: string;
 	endDate: string;
 	userId: number;
+	// Location coordinates for map integration
+	latitude?: number;
+	longitude?: number;
 }

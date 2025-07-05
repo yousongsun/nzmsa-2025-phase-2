@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { getCurrentUserId } from "@/lib/auth";
 import type { User } from "@/models/user";
 import {
 	followUser,
@@ -10,15 +11,14 @@ import {
 	unfollowUser,
 } from "@/services/FollowService";
 import { getUserById } from "@/services/UserService";
-import { getCurrentUserId } from "@/lib/auth";
 
 const Profile = () => {
 	const { id } = useParams<{ id: string }>();
 	const [user, setUser] = useState<User | null>(null);
 	const [followers, setFollowers] = useState<User[]>([]);
 	const [following, setFollowing] = useState<User[]>([]);
-        const [isFollowingUser, setIsFollowingUser] = useState(false);
-        const currentUserId = getCurrentUserId();
+	const [isFollowingUser, setIsFollowingUser] = useState(false);
+	const currentUserId = getCurrentUserId();
 
 	useEffect(() => {
 		const fetchProfile = async () => {
@@ -27,9 +27,9 @@ const Profile = () => {
 				const fetchedUser = await getUserById(userId);
 				const fetchedFollowers = await getFollowers(userId);
 				const fetchedFollowing = await getFollowing(userId);
-                                const followingStatus = currentUserId
-                                        ? await isFollowing(currentUserId, userId)
-                                        : false;
+				const followingStatus = currentUserId
+					? await isFollowing(currentUserId, userId)
+					: false;
 				setUser(fetchedUser);
 				setFollowers(fetchedFollowers);
 				setFollowing(fetchedFollowing);
@@ -38,7 +38,7 @@ const Profile = () => {
 		};
 
 		fetchProfile();
-	}, [id]);
+	}, [id, currentUserId]);
 
 	const handleFollow = async () => {
 		if (id) {
@@ -66,7 +66,7 @@ const Profile = () => {
 				<h1 className="text-2xl font-bold">
 					{user.firstName} {user.lastName}
 				</h1>
-                                {currentUserId !== null && currentUserId !== user.userId && (
+				{currentUserId !== null && currentUserId !== user.userId && (
 					<Button
 						onClick={isFollowingUser ? handleUnfollow : handleFollow}
 						className="ml-4"

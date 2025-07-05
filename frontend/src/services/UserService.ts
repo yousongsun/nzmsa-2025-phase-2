@@ -14,12 +14,12 @@ const getAuthHeaders = () => {
 };
 
 export const getUserByEmail = async (email: string): Promise<User> => {
-        const encoded = encodeURIComponent(email);
-        const response = await axios.get(
-                `${API_BASE_URL}/api/users/by-email?email=${encoded}`,
-                getAuthHeaders(),
-        );
-        return response.data;
+	const encoded = encodeURIComponent(email);
+	const response = await axios.get(
+		`${API_BASE_URL}/api/users/by-email?email=${encoded}`,
+		getAuthHeaders(),
+	);
+	return response.data;
 };
 
 export const getUserById = async (id: number): Promise<User> => {

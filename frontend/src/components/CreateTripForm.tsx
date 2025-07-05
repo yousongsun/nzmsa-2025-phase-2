@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { LocationPicker } from "@/components/LocationPicker";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,7 +15,22 @@ export function CreateTripForm({ onTripCreated }: CreateTripFormProps) {
 	const [destination, setDestination] = useState("");
 	const [startDate, setStartDate] = useState("");
 	const [endDate, setEndDate] = useState("");
+	const [latitude, setLatitude] = useState<number | undefined>();
+	const [longitude, setLongitude] = useState<number | undefined>();
+	const [address, setAddress] = useState("");
 	const [error, setError] = useState("");
+
+	const handleLocationChange = (location: {
+		latitude: number;
+		longitude: number;
+		address?: string;
+	}) => {
+		setLatitude(location.latitude);
+		setLongitude(location.longitude);
+		if (location.address) {
+			setAddress(location.address);
+		}
+	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -25,6 +41,8 @@ export function CreateTripForm({ onTripCreated }: CreateTripFormProps) {
 				destination,
 				startDate,
 				endDate,
+				latitude,
+				longitude,
 			});
 			onTripCreated(newTrip);
 		} catch (_err) {
@@ -70,6 +88,20 @@ export function CreateTripForm({ onTripCreated }: CreateTripFormProps) {
 					value={endDate}
 					onChange={(e) => setEndDate(e.target.value)}
 					required
+				/>
+			</div>
+			<div>
+				<Label>Trip Location (Optional)</Label>
+				<p className="text-sm text-gray-600 mb-2">
+					Add a location to see your trip on the map
+				</p>
+				<LocationPicker
+					latitude={latitude}
+					longitude={longitude}
+					address={address}
+					onLocationChange={handleLocationChange}
+					onAddressChange={setAddress}
+					className="h-64 w-full rounded-lg"
 				/>
 			</div>
 			<Button type="submit">Create Trip</Button>
