@@ -120,8 +120,6 @@ const TripDetails = () => {
 					<div className="mt-4 pt-4 border-t">
 						<ShareTripForm
 							tripId={trip.tripId}
-							existingSharedTrips={sharedTrips}
-							existingUsers={sharedUsers}
 							onSharedTripCreated={handleSharedTripCreated}
 						/>
 					</div>
