@@ -33,6 +33,30 @@ export function CreateItineraryItemForm({
 	const [longitude, setLongitude] = useState<number | undefined>();
 	const [address, setAddress] = useState("");
 	const [error, setError] = useState("");
+	const [timeError, setTimeError] = useState("");
+
+	const validateTimes = (start: string, end: string) => {
+		if (start && end) {
+			const startDate = new Date(start);
+			const endDate = new Date(end);
+			if (startDate >= endDate) {
+				setTimeError("Start time must be earlier than end time");
+				return false;
+			}
+		}
+		setTimeError("");
+		return true;
+	};
+
+	const handleStartTimeChange = (value: string) => {
+		setStartTime(value);
+		validateTimes(value, endTime);
+	};
+
+	const handleEndTimeChange = (value: string) => {
+		setEndTime(value);
+		validateTimes(startTime, value);
+	};
 
 	const handleLocationChange = (location: {
 		latitude: number;
@@ -49,6 +73,12 @@ export function CreateItineraryItemForm({
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setError("");
+
+		// Validate times before submission
+		if (!validateTimes(startTime, endTime)) {
+			return;
+		}
+
 		try {
 			const newItineraryItem = await createItineraryItem(tripId, {
 				name,
@@ -60,6 +90,14 @@ export function CreateItineraryItemForm({
 				address,
 			});
 			onItineraryItemCreated(newItineraryItem);
+			// Reset form after successful creation
+			setName("");
+			setStartTime("");
+			setEndTime("");
+			setLatitude(undefined);
+			setLongitude(undefined);
+			setAddress("");
+			setTimeError("");
 		} catch (_err) {
 			setError(
 				"An error occurred while creating the itinerary item. Please try again.",
@@ -82,7 +120,7 @@ export function CreateItineraryItemForm({
 				<Label htmlFor="type">Type</Label>
 				<Select
 					onValueChange={(value: string) => setType(value as ItineraryItemType)}
-					defaultValue={type}
+					value={type}
 				>
 					<SelectTrigger>
 						<SelectValue placeholder="Select a type" />
@@ -102,8 +140,9 @@ export function CreateItineraryItemForm({
 					id="startTime"
 					type="datetime-local"
 					value={startTime}
-					onChange={(e) => setStartTime(e.target.value)}
+					onChange={(e) => handleStartTimeChange(e.target.value)}
 					required
+					className={timeError ? "border-red-500" : ""}
 				/>
 			</div>
 			<div>
@@ -112,9 +151,11 @@ export function CreateItineraryItemForm({
 					id="endTime"
 					type="datetime-local"
 					value={endTime}
-					onChange={(e) => setEndTime(e.target.value)}
+					onChange={(e) => handleEndTimeChange(e.target.value)}
 					required
+					className={timeError ? "border-red-500" : ""}
 				/>
+				{timeError && <p className="text-red-500 text-sm mt-1">{timeError}</p>}
 			</div>
 			<div>
 				<Label>Location (Optional)</Label>
@@ -130,7 +171,9 @@ export function CreateItineraryItemForm({
 					className="h-64 w-full rounded-lg"
 				/>
 			</div>
-			<Button type="submit">Create Itinerary Item</Button>
+			<Button type="submit" disabled={!!timeError}>
+				Create Itinerary Item
+			</Button>
 			{error && <p className="text-red-500">{error}</p>}
 		</form>
 	);
