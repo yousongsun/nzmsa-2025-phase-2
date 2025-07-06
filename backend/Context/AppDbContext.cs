@@ -26,6 +26,8 @@ namespace backend.Context
                 entity.HasKey(e => e.TripId);
                 entity.Property(e => e.Name).IsRequired();
                 entity.Property(e => e.Destination).IsRequired();
+                entity.Property(e => e.Latitude);
+                entity.Property(e => e.Longitude);
                 entity.HasOne(e => e.User)
                     .WithMany(u => u.Trips)
                     .HasForeignKey(e => e.UserId);
@@ -36,6 +38,11 @@ namespace backend.Context
             {
                 entity.HasKey(e => e.ItineraryItemId);
                 entity.Property(e => e.Name).IsRequired();
+                entity.Property(e => e.Type)
+                      .HasConversion<string>();
+                entity.Property(e => e.Address);
+                entity.Property(e => e.Latitude);
+                entity.Property(e => e.Longitude);
                 entity.HasOne(e => e.Trip)
                     .WithMany(t => t.ItineraryItems)
                     .HasForeignKey(e => e.TripId);

@@ -18,6 +18,10 @@ namespace backend.Models
         [Required]
         public DateTime EndDate { get; set; }
 
+        // Optional location coordinates for map features
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
+
         public long UserId { get; set; }
 
         public User? User { get; set; }
