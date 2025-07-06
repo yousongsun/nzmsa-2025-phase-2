@@ -1,10 +1,12 @@
 import { Calendar, Hotel, MapPin, Plane } from "lucide-react";
 import React, { useCallback, useRef } from "react";
 import MapGL, {
+	Layer,
 	type MapRef,
 	Marker,
 	NavigationControl,
 	Popup,
+	Source,
 } from "react-map-gl/maplibre";
 import type { ItineraryItem, ItineraryItemType } from "@/models/itinerary-item";
 import type { Trip } from "@/models/trip";
@@ -18,6 +20,7 @@ interface MapLocation {
 	description?: string;
 	type?: "trip" | ItineraryItemType;
 	data?: Trip | ItineraryItem;
+	startTime?: string;
 }
 
 interface BaseMapProps {
@@ -31,6 +34,7 @@ interface BaseMapProps {
 	selectedLocationId?: string;
 	style?: React.CSSProperties;
 	className?: string;
+	showRouteLines?: boolean;
 }
 
 const getIconForType = (type?: string) => {
@@ -63,6 +67,35 @@ const getMarkerColor = (type?: string) => {
 	}
 };
 
+const createRouteLineGeoJSON = (locations: MapLocation[]) => {
+	// Filter locations with coordinates and sort by start time
+	const sortedLocations = locations
+		.filter((loc) => loc.latitude && loc.longitude && loc.startTime)
+		.sort((a, b) => {
+			const timeA = new Date(a.startTime!).getTime();
+			const timeB = new Date(b.startTime!).getTime();
+			return timeA - timeB;
+		});
+
+	if (sortedLocations.length < 2) {
+		return null;
+	}
+
+	const coordinates = sortedLocations.map((loc) => [
+		loc.longitude,
+		loc.latitude,
+	]);
+
+	return {
+		type: "Feature" as const,
+		properties: {},
+		geometry: {
+			type: "LineString" as const,
+			coordinates: coordinates,
+		},
+	};
+};
+
 export const BaseMap: React.FC<BaseMapProps> = ({
 	locations,
 	initialViewState = {
@@ -74,6 +107,7 @@ export const BaseMap: React.FC<BaseMapProps> = ({
 	selectedLocationId,
 	style,
 	className = "h-96 w-full rounded-lg",
+	showRouteLines = false,
 }) => {
 	const mapRef = useRef<MapRef>(null);
 	const [selectedLocation, setSelectedLocation] =
@@ -127,6 +161,11 @@ export const BaseMap: React.FC<BaseMapProps> = ({
 		return () => clearTimeout(timer);
 	}, [fitBounds]);
 
+	const routeGeoJSON = React.useMemo(() => {
+		if (!showRouteLines) return null;
+		return createRouteLineGeoJSON(locations);
+	}, [locations, showRouteLines]);
+
 	return (
 		<div className={className} style={style}>
 			<MapGL
@@ -138,7 +177,39 @@ export const BaseMap: React.FC<BaseMapProps> = ({
 			>
 				<NavigationControl position="top-right" />
 
-				{locations.map((location) => (
+				{/* Route line */}
+				{showRouteLines && routeGeoJSON && (
+					<Source id="route" type="geojson" data={routeGeoJSON}>
+						<Layer
+							id="route-line"
+							type="line"
+							paint={{
+								"line-color": "#3b82f6",
+								"line-width": 3,
+								"line-opacity": 0.8,
+							}}
+							layout={{
+								"line-join": "round",
+								"line-cap": "round",
+							}}
+						/>
+						<Layer
+							id="route-line-outline"
+							type="line"
+							paint={{
+								"line-color": "#1e40af",
+								"line-width": 5,
+								"line-opacity": 0.4,
+							}}
+							layout={{
+								"line-join": "round",
+								"line-cap": "round",
+							}}
+						/>
+					</Source>
+				)}
+
+				{locations.map((location, _index) => (
 					<Marker
 						key={location.id}
 						latitude={location.latitude}
@@ -148,13 +219,30 @@ export const BaseMap: React.FC<BaseMapProps> = ({
 							handleMarkerClick(location);
 						}}
 					>
-						<div
-							className={`p-2 rounded-full shadow-lg cursor-pointer transition-all hover:scale-110 ${
-								selectedLocationId === location.id ? "ring-2 ring-blue-500" : ""
-							}`}
-							style={{ backgroundColor: getMarkerColor(location.type) }}
-						>
-							{getIconForType(location.type)}
+						<div className="relative">
+							<div
+								className={`p-2 rounded-full shadow-lg cursor-pointer transition-all hover:scale-110 ${
+									selectedLocationId === location.id
+										? "ring-2 ring-blue-500"
+										: ""
+								}`}
+								style={{ backgroundColor: getMarkerColor(location.type) }}
+							>
+								{getIconForType(location.type)}
+							</div>
+							{/* Show sequence number if showing route lines */}
+							{showRouteLines && location.startTime && (
+								<div className="absolute -top-2 -right-2 bg-white text-xs font-bold text-gray-800 rounded-full w-5 h-5 flex items-center justify-center border border-gray-300 shadow-sm">
+									{locations
+										.filter((loc) => loc.startTime)
+										.sort(
+											(a, b) =>
+												new Date(a.startTime!).getTime() -
+												new Date(b.startTime!).getTime(),
+										)
+										.findIndex((loc) => loc.id === location.id) + 1}
+								</div>
+							)}
 						</div>
 					</Marker>
 				))}
@@ -175,6 +263,11 @@ export const BaseMap: React.FC<BaseMapProps> = ({
 							{selectedLocation.description && (
 								<p className="text-xs text-gray-600 mt-1">
 									{selectedLocation.description}
+								</p>
+							)}
+							{selectedLocation.startTime && (
+								<p className="text-xs text-gray-500 mt-1">
+									{new Date(selectedLocation.startTime).toLocaleString()}
 								</p>
 							)}
 							{selectedLocation.type && selectedLocation.type !== "trip" && (

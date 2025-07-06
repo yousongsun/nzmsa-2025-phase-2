@@ -11,6 +11,7 @@ interface TripMapProps {
 		data: Trip | ItineraryItem;
 	}) => void;
 	className?: string;
+	showRouteLines?: boolean;
 }
 
 export const TripMap: React.FC<TripMapProps> = ({
@@ -18,6 +19,7 @@ export const TripMap: React.FC<TripMapProps> = ({
 	itineraryItems,
 	onLocationClick,
 	className = "h-96 w-full rounded-lg",
+	showRouteLines = true,
 }) => {
 	const locations = React.useMemo(() => {
 		const mapLocations = [];
@@ -32,6 +34,7 @@ export const TripMap: React.FC<TripMapProps> = ({
 				description: trip.destination,
 				type: "trip" as const,
 				data: trip,
+				startTime: trip.startDate, // Use trip start date for ordering
 			});
 		}
 
@@ -48,6 +51,7 @@ export const TripMap: React.FC<TripMapProps> = ({
 						`${item.type} - ${new Date(item.startTime).toLocaleDateString()}`,
 					type: item.type,
 					data: item,
+					startTime: item.startTime,
 				});
 			}
 		});
@@ -87,6 +91,7 @@ export const TripMap: React.FC<TripMapProps> = ({
 			locations={locations}
 			onLocationClick={handleLocationClick}
 			className={className}
+			showRouteLines={showRouteLines}
 		/>
 	);
 };
