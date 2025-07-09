@@ -12,6 +12,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { selectIsLoggedIn } from "@/redux/selector/authSelectors";
+import { loginSuccess } from "@/redux/slices/authSlice";
 
 const API_BASE_URL =
 	import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5042";
@@ -24,8 +27,9 @@ export function LoginForm({
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
 	const [success, setSuccess] = useState(false);
-	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const navigate = useNavigate();
+	const dispatch = useAppDispatch();
+	const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
 	useEffect(() => {
 		if (isLoggedIn) {
@@ -45,8 +49,7 @@ export function LoginForm({
 			setSuccess(true);
 			setEmail("");
 			setPassword("");
-			localStorage.setItem("token", response.data.token);
-			setIsLoggedIn(true);
+			dispatch(loginSuccess(response.data.token));
 		} catch (err) {
 			setError(
 				(err as Error).message ||
