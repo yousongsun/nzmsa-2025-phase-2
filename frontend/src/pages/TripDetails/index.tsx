@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { CreateItineraryItemForm } from "@/components/CreateItineraryItemForm";
+import { EditItineraryItemDialog } from "@/components/EditItineraryItemForm";
+import { EditSharedTripDialog } from "@/components/EditSharedTripForm";
+import { EditTripDialog } from "@/components/EditTripForm";
 import { ShareTripDialog } from "@/components/ShareTripForm";
 import { TripMap } from "@/components/TripMap";
 import { Button } from "@/components/ui/button";
@@ -77,6 +80,26 @@ const TripDetails = () => {
 		}
 	};
 
+	const handleTripUpdated = (updatedTrip: Trip) => {
+		setTrip(updatedTrip);
+	};
+
+	const handleItineraryItemUpdated = (updatedItem: ItineraryItem) => {
+		setItineraryItems((items) =>
+			items.map((it) =>
+				it.itineraryItemId === updatedItem.itineraryItemId ? updatedItem : it,
+			),
+		);
+	};
+
+	const handleSharedTripUpdated = (updatedShared: SharedTrip) => {
+		setSharedTrips((items) =>
+			items.map((st) =>
+				st.sharedTripId === updatedShared.sharedTripId ? updatedShared : st,
+			),
+		);
+	};
+
 	const handleLocationClick = (location: {
 		type: "trip" | "item";
 		data: Trip | ItineraryItem;
@@ -117,30 +140,37 @@ const TripDetails = () => {
 							{new Date(trip.endDate).toLocaleDateString()}
 						</p>
 					</div>
-					<ShareTripDialog
-						tripId={trip.tripId}
-						tripName={trip.name}
-						onSharedTripCreated={handleSharedTripCreated}
-						trigger={
-							<Button variant="outline">
-								<svg
-									className="w-4 h-4 mr-2"
-									fill="none"
-									stroke="currentColor"
-									viewBox="0 0 24 24"
-								>
-									<title>Share Trip Icon</title>
-									<path
-										strokeLinecap="round"
-										strokeLinejoin="round"
-										strokeWidth={2}
-										d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"
-									/>
-								</svg>
-								Share Trip
-							</Button>
-						}
-					/>
+					<div className="flex gap-2">
+						<EditTripDialog
+							trip={trip}
+							onTripUpdated={handleTripUpdated}
+							trigger={<Button variant="outline">Edit Trip</Button>}
+						/>
+						<ShareTripDialog
+							tripId={trip.tripId}
+							tripName={trip.name}
+							onSharedTripCreated={handleSharedTripCreated}
+							trigger={
+								<Button variant="outline">
+									<svg
+										className="w-4 h-4 mr-2"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+									>
+										<title>Share Trip Icon</title>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth={2}
+											d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367-2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"
+										/>
+									</svg>
+									Share Trip
+								</Button>
+							}
+						/>
+					</div>
 				</div>
 			</Card>
 
@@ -200,55 +230,81 @@ const TripDetails = () => {
 									new Date(b.startTime).getTime(),
 							)
 							.map((item) => (
-								<button
-									type="button"
-									key={item.itineraryItemId}
-									className={`w-full text-left p-4 border rounded-lg cursor-pointer transition-all hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-										selectedLocationId === `item-${item.itineraryItemId}`
-											? "border-blue-500 bg-blue-50"
-											: "border-gray-200 hover:border-gray-300"
-									}`}
-									onClick={() =>
-										setSelectedLocationId(`item-${item.itineraryItemId}`)
-									}
-									onKeyDown={(e) => {
-										if (e.key === "Enter" || e.key === " ") {
-											setSelectedLocationId(`item-${item.itineraryItemId}`);
+								<div key={item.itineraryItemId} className="relative">
+									<button
+										type="button"
+										className={`w-full text-left p-4 border rounded-lg cursor-pointer transition-all hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+											selectedLocationId === `item-${item.itineraryItemId}`
+												? "border-blue-500 bg-blue-50"
+												: "border-gray-200 hover:border-gray-300"
+										}`}
+										onClick={() =>
+											setSelectedLocationId(`item-${item.itineraryItemId}`)
 										}
-									}}
-									tabIndex={0}
-									aria-pressed={
-										selectedLocationId === `item-${item.itineraryItemId}`
-									}
-								>
-									<div className="flex justify-between items-start mb-2">
-										<h3 className="text-lg font-semibold">{item.name}</h3>
-										<span
-											className={`px-2 py-1 rounded-full text-xs font-medium ${
-												item.type === "Flight"
-													? "bg-blue-100 text-blue-800"
-													: item.type === "Hotel"
-														? "bg-green-100 text-green-800"
-														: "bg-purple-100 text-purple-800"
-											}`}
-										>
-											{item.type}
-										</span>
-									</div>
-									<p className="text-sm text-gray-600 mb-2">
-										{new Date(item.startTime).toLocaleString()} -{" "}
-										{new Date(item.endTime).toLocaleString()}
-									</p>
-									{item.address && (
-										<p className="text-sm text-gray-500">📍 {item.address}</p>
-									)}
-									{item.latitude && item.longitude && (
-										<p className="text-xs text-gray-400 mt-1">
-											Coordinates: {item.latitude.toFixed(4)},{" "}
-											{item.longitude.toFixed(4)}
+										onKeyDown={(e) => {
+											if (e.key === "Enter" || e.key === " ") {
+												setSelectedLocationId(`item-${item.itineraryItemId}`);
+											}
+										}}
+										tabIndex={0}
+										aria-pressed={
+											selectedLocationId === `item-${item.itineraryItemId}`
+										}
+									>
+										<div className="flex justify-between items-start mb-2">
+											<h3 className="text-lg font-semibold">{item.name}</h3>
+											<span
+												className={`px-2 py-1 rounded-full text-xs font-medium ${
+													item.type === "Flight"
+														? "bg-blue-100 text-blue-800"
+														: item.type === "Hotel"
+															? "bg-green-100 text-green-800"
+															: "bg-purple-100 text-purple-800"
+												}`}
+											>
+												{item.type}
+											</span>
+										</div>
+										<p className="text-sm text-gray-600 mb-2">
+											{new Date(item.startTime).toLocaleString()} -{" "}
+											{new Date(item.endTime).toLocaleString()}
 										</p>
-									)}
-								</button>
+										{item.address && (
+											<p className="text-sm text-gray-500">📍 {item.address}</p>
+										)}
+										{item.latitude && item.longitude && (
+											<p className="text-xs text-gray-400 mt-1">
+												Coordinates: {item.latitude.toFixed(4)},{" "}
+												{item.longitude.toFixed(4)}
+											</p>
+										)}
+									</button>
+									<div className="absolute top-2 right-2">
+										<EditItineraryItemDialog
+											tripId={trip.tripId}
+											item={item}
+											onItineraryItemUpdated={handleItineraryItemUpdated}
+											trigger={
+												<Button variant="ghost" size="icon">
+													<svg
+														className="w-4 h-4"
+														fill="none"
+														stroke="currentColor"
+														viewBox="0 0 24 24"
+													>
+														<title>Edit Itinerary Item Icon</title>
+														<path
+															strokeLinecap="round"
+															strokeLinejoin="round"
+															strokeWidth={2}
+															d="M15.232 5.232l3.536 3.536M9 11l3.232 3.232m0 0L20.768 5.232a2.5 2.5 0 00-3.536-3.536L8.696 10.696M12.232 14.232L9 17.464V21h3.536l3.232-3.232"
+														/>
+													</svg>
+												</Button>
+											}
+										/>
+									</div>
+								</div>
 							))
 					)}
 				</div>
@@ -298,6 +354,29 @@ const TripDetails = () => {
 									>
 										{sharedTrip.permissionLevel}
 									</span>
+									<EditSharedTripDialog
+										tripId={trip.tripId}
+										sharedTrip={sharedTrip}
+										onSharedTripUpdated={handleSharedTripUpdated}
+										trigger={
+											<Button variant="ghost" size="icon">
+												<svg
+													className="w-4 h-4"
+													fill="none"
+													stroke="currentColor"
+													viewBox="0 0 24 24"
+												>
+													<title>Edit Shared Trip Icon</title>
+													<path
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														strokeWidth={2}
+														d="M15.232 5.232l3.536 3.536M9 11l3.232 3.232m0 0L20.768 5.232a2.5 2.5 0 00-3.536-3.536L8.696 10.696M12.232 14.232L9 17.464V21h3.536l3.232-3.232"
+													/>
+												</svg>
+											</Button>
+										}
+									/>
 								</div>
 							);
 						})
