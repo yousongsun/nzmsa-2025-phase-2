@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { CreateItineraryItemForm } from "@/components/CreateItineraryItemForm";
-import { ShareTripForm } from "@/components/ShareTripForm";
+import { ShareTripDialog } from "@/components/ShareTripForm";
 import { TripMap } from "@/components/TripMap";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -22,7 +22,6 @@ const TripDetails = () => {
 	const [sharedUsers, setSharedUsers] = useState<User[]>([]);
 	const [showCreateItineraryItemForm, setShowCreateItineraryItemForm] =
 		useState(false);
-	const [showShareTripForm, setShowShareTripForm] = useState(false);
 	const [selectedLocationId, setSelectedLocationId] = useState<string>("");
 	const [showRouteLines, setShowRouteLines] = useState(true);
 
@@ -64,7 +63,6 @@ const TripDetails = () => {
 	const handleSharedTripCreated = async (newSharedTrip: SharedTrip) => {
 		const updatedSharedTrips = [...sharedTrips, newSharedTrip];
 		setSharedTrips(updatedSharedTrips);
-		setShowShareTripForm(false);
 
 		// Fetch user information for the new shared trip
 		try {
@@ -97,33 +95,53 @@ const TripDetails = () => {
 	};
 
 	if (!trip) {
-		return <div>Loading...</div>;
+		return (
+			<div className="container mx-auto p-4">
+				<div className="flex items-center justify-center min-h-[400px]">
+					<div className="text-lg">Loading trip details...</div>
+				</div>
+			</div>
+		);
 	}
 
 	return (
 		<div className="container mx-auto p-4 space-y-6">
 			{/* Trip Header */}
 			<Card className="p-6">
-				<div className="flex justify-between items-center mb-4">
-					<h1 className="text-3xl font-bold">{trip.name}</h1>
-					<Button onClick={() => setShowShareTripForm(!showShareTripForm)}>
-						{showShareTripForm ? "Cancel" : "Share Trip"}
-					</Button>
-				</div>
-				<p className="text-lg text-gray-600 mb-2">{trip.destination}</p>
-				<p className="text-sm text-gray-500">
-					{new Date(trip.startDate).toLocaleDateString()} -{" "}
-					{new Date(trip.endDate).toLocaleDateString()}
-				</p>
-
-				{showShareTripForm && (
-					<div className="mt-4 pt-4 border-t">
-						<ShareTripForm
-							tripId={trip.tripId}
-							onSharedTripCreated={handleSharedTripCreated}
-						/>
+				<div className="flex justify-between items-start mb-4">
+					<div>
+						<h1 className="text-3xl font-bold mb-2">{trip.name}</h1>
+						<p className="text-lg text-gray-600 mb-2">{trip.destination}</p>
+						<p className="text-sm text-gray-500">
+							{new Date(trip.startDate).toLocaleDateString()} -{" "}
+							{new Date(trip.endDate).toLocaleDateString()}
+						</p>
 					</div>
-				)}
+					<ShareTripDialog
+						tripId={trip.tripId}
+						tripName={trip.name}
+						onSharedTripCreated={handleSharedTripCreated}
+						trigger={
+							<Button variant="outline">
+								<svg
+									className="w-4 h-4 mr-2"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<title>Share Trip Icon</title>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth={2}
+										d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"
+									/>
+								</svg>
+								Share Trip
+							</Button>
+						}
+					/>
+				</div>
 			</Card>
 
 			{/* Trip Map */}
@@ -254,15 +272,22 @@ const TripDetails = () => {
 									key={sharedTrip.sharedTripId}
 									className="p-3 bg-gray-50 rounded-lg flex justify-between items-center"
 								>
-									<div>
-										<p className="font-medium">
+									<div className="flex items-center space-x-3">
+										<div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
 											{user
-												? getUserDisplayName(user)
-												: `User ID: ${sharedTrip.userId}`}
-										</p>
-										{user && (
-											<p className="text-sm text-gray-500">{user.email}</p>
-										)}
+												? `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`
+												: "?"}
+										</div>
+										<div>
+											<p className="font-medium">
+												{user
+													? getUserDisplayName(user)
+													: `User ID: ${sharedTrip.userId}`}
+											</p>
+											{user && (
+												<p className="text-sm text-gray-500">{user.email}</p>
+											)}
+										</div>
 									</div>
 									<span
 										className={`px-3 py-1 rounded-full text-xs font-medium ${

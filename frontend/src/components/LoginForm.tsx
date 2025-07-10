@@ -26,6 +26,7 @@ export function LoginForm({
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
+	const [loading, setLoading] = useState(false);
 	const [success, setSuccess] = useState(false);
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
@@ -40,76 +41,114 @@ export function LoginForm({
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setError("");
+		setLoading(true);
+
 		try {
 			const response = await axios.post(
 				`${API_BASE_URL}/api/users/login`,
 				{ email, password },
 				{ withCredentials: true },
 			);
+
 			setSuccess(true);
 			setEmail("");
 			setPassword("");
 			dispatch(loginSuccess(response.data.token));
-		} catch (err) {
-			setError(
-				(err as Error).message ||
-					"An error occurred while logging in. Please try again.",
-			);
+
+			// Add a small delay to show success message
+			setTimeout(() => {
+				navigate("/dashboard");
+			}, 1000);
+		} catch (err: any) {
+			const errorMessage =
+				err.response?.data?.message ||
+				err.message ||
+				"An error occurred while logging in. Please try again.";
+			setError(errorMessage);
+		} finally {
+			setLoading(false);
 		}
 	};
 
 	return (
 		<div className={cn("flex flex-col gap-6", className)} {...props}>
-			<Card>
-				<CardHeader>
-					<CardTitle>Login to your account</CardTitle>
+			<Card className="w-full max-w-md mx-auto">
+				<CardHeader className="text-center">
+					<CardTitle className="text-2xl">Welcome back</CardTitle>
 					<CardDescription>
 						Enter your email below to login to your account
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<form onSubmit={handleSubmit}>
-						<div className="flex flex-col gap-6">
-							<div className="grid gap-3">
-								<Label htmlFor="email">Email</Label>
-								<Input
-									id="email"
-									type="email"
-									placeholder="msa@nz.com"
-									required
-									value={email}
-									onChange={(e) => setEmail(e.target.value)}
-								/>
-							</div>
-							<div className="grid gap-3">
-								<div className="flex items-center">
-									<Label htmlFor="password">Password</Label>
-								</div>
-								<Input
-									id="password"
-									type="password"
-									required
-									value={password}
-									onChange={(e) => setPassword(e.target.value)}
-								/>
-							</div>
-							<div className="flex flex-col gap-3">
-								<Button type="submit" className="w-full">
-									Login
-								</Button>
-							</div>
+					<form onSubmit={handleSubmit} className="space-y-4">
+						<div className="space-y-2">
+							<Label htmlFor="email">Email</Label>
+							<Input
+								id="email"
+								type="email"
+								placeholder="msa@nz.com"
+								required
+								value={email}
+								onChange={(e) => setEmail(e.target.value)}
+								disabled={loading}
+								className={error ? "border-red-500" : ""}
+							/>
 						</div>
-						{error && <p className="mt-4 text-sm text-red-500">{error}</p>}
-						{!error && success && (
-							<p className="mt-4 text-sm text-green-600">
-								Logged in successfully! Redirecting...
-							</p>
+
+						<div className="space-y-2">
+							<div className="flex items-center justify-between">
+								<Label htmlFor="password">Password</Label>
+							</div>
+							<Input
+								id="password"
+								type="password"
+								required
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+								disabled={loading}
+								className={error ? "border-red-500" : ""}
+							/>
+						</div>
+
+						<Button
+							type="submit"
+							className="w-full"
+							disabled={loading || !email || !password}
+						>
+							{loading ? (
+								<div className="flex items-center space-x-2">
+									<div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+									<span>Signing in...</span>
+								</div>
+							) : (
+								"Sign in"
+							)}
+						</Button>
+
+						{error && (
+							<div className="p-3 rounded-md bg-red-50 border border-red-200">
+								<p className="text-sm text-red-600 text-center">{error}</p>
+							</div>
 						)}
-						<div className="mt-4 text-center text-sm">
-							Don&apos;t have an account?{" "}
-							<a href="/signup" className="underline underline-offset-4">
-								Sign up
-							</a>
+
+						{success && (
+							<div className="p-3 rounded-md bg-green-50 border border-green-200">
+								<p className="text-sm text-green-600 text-center">
+									✓ Logged in successfully! Redirecting...
+								</p>
+							</div>
+						)}
+
+						<div className="text-center">
+							<p className="text-sm text-gray-600">
+								Don't have an account?{" "}
+								<a
+									href="/signup"
+									className="font-medium underline underline-offset-4"
+								>
+									Sign up
+								</a>
+							</p>
 						</div>
 					</form>
 				</CardContent>

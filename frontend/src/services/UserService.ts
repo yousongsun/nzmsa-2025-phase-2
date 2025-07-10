@@ -29,3 +29,12 @@ export const getUserById = async (id: number): Promise<User> => {
 	);
 	return response.data;
 };
+
+export const searchUsers = async (query: string): Promise<User[]> => {
+	const encoded = encodeURIComponent(query);
+	const response = await axios.get(
+		`${API_BASE_URL}/api/users/search?q=${encoded}`,
+		getAuthHeaders(),
+	);
+	return response.data;
+};
