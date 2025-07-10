@@ -14,5 +14,6 @@ namespace backend.Repositories.Abstract
         Task DeleteUserAsync(long id);
         Task<bool> UserExistsAsync(long id);
         Task BulkAddUsersAsync(IEnumerable<User> users);
+        Task<IEnumerable<User>> SearchUsersAsync(string query);
     }
 }

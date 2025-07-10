@@ -104,6 +104,21 @@ namespace backend.Controllers
             return Ok(emailExists);
         }
 
+        // GET: api/Users/search
+        [HttpGet("search")]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<UserResponse>>> SearchUsers([FromQuery(Name = "q")] string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return BadRequest("Query is required.");
+            }
+
+            var users = await _repository.SearchUsersAsync(query);
+            var result = users.Select(ToUserResponse);
+            return Ok(result);
+        }
+
 
 
 

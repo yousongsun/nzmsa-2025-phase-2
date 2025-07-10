@@ -160,5 +160,22 @@ namespace backend.Repositories.Concrete
             await _context.Users.AddRangeAsync(userList);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<User>> SearchUsersAsync(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                return new List<User>();
+            }
+
+            query = query.ToLowerInvariant();
+
+            return await _context.Users
+                .Where(u =>
+                    (!string.IsNullOrEmpty(u.FirstName) && u.FirstName.ToLower().Contains(query)) ||
+                    (!string.IsNullOrEmpty(u.LastName) && u.LastName.ToLower().Contains(query)) ||
+                    (!string.IsNullOrEmpty(u.Email) && u.Email.ToLower().Contains(query)))
+                .ToListAsync();
+        }
     }
 }
