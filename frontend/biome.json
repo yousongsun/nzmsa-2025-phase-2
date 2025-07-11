@@ -18,6 +18,12 @@
 			"recommended": true,
 			"nursery": {
 				"useUniqueElementIds": "off"
+			},
+			"suspicious": {
+				"noExplicitAny": "off"
+			},
+			"style": {
+				"noNonNullAssertion": "off"
 			}
 		}
 	},

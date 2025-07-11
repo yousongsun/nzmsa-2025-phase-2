@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { CreateTripDialog } from "@/components/CreateTripForm";
+import { EditTripDialog } from "@/components/EditTripForm";
 import { UserSearchDialog } from "@/components/UserSearchDialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Trip } from "@/models/trip";
-import { getTrips } from "@/services/TripService";
+import { deleteTrip, getTrips } from "@/services/TripService";
 
 const Dashboard = () => {
 	const [trips, setTrips] = useState<Trip[]>([]);
@@ -29,6 +30,21 @@ const Dashboard = () => {
 
 	const handleTripCreated = (newTrip: Trip) => {
 		setTrips([...trips, newTrip]);
+	};
+
+	const handleTripUpdated = (updated: Trip) => {
+		setTrips((ts) =>
+			ts.map((t) => (t.tripId === updated.tripId ? updated : t)),
+		);
+	};
+
+	const handleTripDeleted = async (id: number) => {
+		try {
+			await deleteTrip(id);
+			setTrips((ts) => ts.filter((t) => t.tripId !== id));
+		} catch (err) {
+			console.error("Failed to delete trip:", err);
+		}
 	};
 
 	const formatDateRange = (startDate: string, endDate: string) => {
@@ -209,8 +225,81 @@ const Dashboard = () => {
 							const daysUntil = getDaysUntil(trip.startDate);
 
 							return (
-								<Link key={trip.tripId} to={`/trip/${trip.tripId}`}>
-									<Card className="h-full hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer group">
+								<Link
+									key={trip.tripId}
+									to={`/trip/${trip.tripId}`}
+									className="group"
+								>
+									<Card className="relative h-full hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer">
+										<div>
+											<button
+												type="button"
+												className="absolute top-2 right-2 flex gap-2 rounded-md bg-white/90 p-1 shadow pointer-events-none opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity backdrop-blur-sm"
+												onClick={(e) => e.preventDefault()}
+												onKeyDown={(e) => {
+													if (e.key === "Enter" || e.key === " ") {
+														e.preventDefault();
+													}
+												}}
+												onKeyUp={(e) => {
+													if (e.key === "Enter" || e.key === " ") {
+														e.preventDefault();
+													}
+												}}
+												aria-label="Trip Actions"
+											></button>
+											<EditTripDialog
+												trip={trip}
+												onTripUpdated={handleTripUpdated}
+												trigger={
+													<Button
+														variant="ghost"
+														size="icon"
+														onClick={(e) => e.stopPropagation()}
+													>
+														<svg
+															className="w-4 h-4"
+															fill="none"
+															stroke="currentColor"
+															viewBox="0 0 24 24"
+														>
+															<title>Edit Trip Icon</title>
+															<path
+																strokeLinecap="round"
+																strokeLinejoin="round"
+																strokeWidth={2}
+																d="M15.232 5.232l3.536 3.536M9 11l3.232 3.232m0 0L20.768 5.232a2.5 2.5 0 00-3.536-3.536L8.696 10.696M12.232 14.232L9 17.464V21h3.536l3.232-3.232"
+															/>
+														</svg>
+													</Button>
+												}
+											/>
+											<Button
+												variant="ghost"
+												size="icon"
+												onClick={(e) => {
+													e.stopPropagation();
+													if (window.confirm("Delete this trip?")) {
+														handleTripDeleted(trip.tripId);
+													}
+												}}
+											>
+												<svg
+													className="w-4 h-4"
+													fill="none"
+													stroke="currentColor"
+													viewBox="0 0 24 24"
+												>
+													<title>Delete Trip Icon</title>
+													<path
+														strokeLinecap="round"
+														strokeLinejoin="round"
+														strokeWidth={2}
+														d="M6 18L18 6M6 6l12 12"
+													/>
+												</svg>
+											</Button>
+										</div>
 										<CardHeader className="pb-3">
 											<div className="flex justify-between items-start mb-2">
 												<CardTitle className="text-lg group-hover:text-blue-600 transition-colors line-clamp-2">

@@ -46,7 +46,7 @@ export function EditTripDialog({
 					`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`,
 				);
 				const data = await res.json();
-				if (data && data.display_name) {
+				if (data?.display_name) {
 					setAddress(data.display_name);
 					return;
 				}
@@ -57,6 +57,7 @@ export function EditTripDialog({
 		setAddress("");
 	};
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: we want to load the address whenever latitude or longitude changes
 	useEffect(() => {
 		loadAddress(latitude, longitude);
 	}, [latitude, longitude]);
