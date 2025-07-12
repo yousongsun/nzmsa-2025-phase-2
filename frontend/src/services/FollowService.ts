@@ -50,9 +50,8 @@ export const isFollowing = async (
 	followingId: number,
 ): Promise<boolean> => {
 	const response = await axios.get(
-		`${API_BASE_URL}/api/users/${followingId}/followers`,
+		`${API_BASE_URL}/api/users/${followerId}/following/${followingId}`,
 		getAuthHeaders(),
 	);
-	const followers: User[] = response.data;
-	return followers.some((follower) => follower.userId === followerId);
+	return response.data as boolean;
 };

@@ -2,8 +2,10 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "@/components/Navigation";
 import PrivateRoute from "@/components/PrivateRoute";
 import Dashboard from "@/pages/Dashboard";
+import Following from "@/pages/Following";
 import Login from "@/pages/Login";
 import Profile from "@/pages/Profile";
+import Settings from "@/pages/Settings";
 import SignUp from "@/pages/SignUp";
 import TripDetails from "@/pages/TripDetails";
 
@@ -17,6 +19,8 @@ function App() {
 					<Route path="/dashboard" element={<Dashboard />} />
 					<Route path="/trip/:id" element={<TripDetails />} />
 					<Route path="/profile/:id" element={<Profile />} />
+					<Route path="/following" element={<Following />} />
+					<Route path="/settings" element={<Settings />} />
 				</Route>
 			</Route>
 			<Route path="*" element={<Navigate to="/dashboard" />} />

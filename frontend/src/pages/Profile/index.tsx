@@ -22,7 +22,7 @@ import {
 	isFollowing,
 	unfollowUser,
 } from "@/services/FollowService";
-import { getUserById } from "@/services/UserService";
+import { getUserById, updateUser } from "@/services/UserService";
 
 const Profile = () => {
 	const { id } = useParams<{ id: string }>();
@@ -124,9 +124,27 @@ const Profile = () => {
 
 	const handleEditSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		// TODO: Implement update user API call
-		console.log("Update user:", editForm);
-		setShowEditDialog(false);
+		if (!user) return;
+
+		try {
+			await updateUser({
+				...user,
+				firstName: editForm.firstName,
+				lastName: editForm.lastName,
+				description: editForm.description,
+			});
+
+			setUser({
+				...user,
+				firstName: editForm.firstName,
+				lastName: editForm.lastName,
+				description: editForm.description,
+			});
+		} catch (error) {
+			console.error("Failed to update user:", error);
+		} finally {
+			setShowEditDialog(false);
+		}
 	};
 
 	if (loading) {

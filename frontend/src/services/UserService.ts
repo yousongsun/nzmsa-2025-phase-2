@@ -38,3 +38,11 @@ export const searchUsers = async (query: string): Promise<User[]> => {
 	);
 	return response.data;
 };
+
+export const updateUser = async (user: User): Promise<void> => {
+	await axios.put(
+		`${API_BASE_URL}/api/users/${user.userId}`,
+		user,
+		getAuthHeaders(),
+	);
+};

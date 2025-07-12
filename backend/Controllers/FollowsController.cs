@@ -59,5 +59,12 @@ namespace backend.Controllers
             var following = await _followRepository.GetFollowingAsync(userId);
             return Ok(following);
         }
+
+        [HttpGet("{followerId}/following/{followingId}")]
+        public async Task<IActionResult> IsFollowing(long followerId, long followingId)
+        {
+            var result = await _followRepository.IsFollowingAsync(followerId, followingId);
+            return Ok(result);
+        }
     }
 }
