@@ -174,7 +174,7 @@ export function CreateTripDialog({
 								value={name}
 								onChange={(e) => setName(e.target.value)}
 								disabled={loading}
-								placeholder="Summer Vacation 2024"
+								placeholder="Summer Vacation 2025"
 							/>
 						</div>
 						<div className="space-y-2">
@@ -184,7 +184,7 @@ export function CreateTripDialog({
 								value={destination}
 								onChange={(e) => setDestination(e.target.value)}
 								disabled={loading}
-								placeholder="Paris, France"
+								placeholder="Auckland, New Zealand"
 							/>
 						</div>
 					</div>

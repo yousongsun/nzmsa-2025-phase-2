@@ -231,23 +231,7 @@ const Dashboard = () => {
 									className="group"
 								>
 									<Card className="relative h-full hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer">
-										<div>
-											<button
-												type="button"
-												className="absolute top-2 right-2 flex gap-2 rounded-md bg-white/90 p-1 shadow pointer-events-none opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity backdrop-blur-sm"
-												onClick={(e) => e.preventDefault()}
-												onKeyDown={(e) => {
-													if (e.key === "Enter" || e.key === " ") {
-														e.preventDefault();
-													}
-												}}
-												onKeyUp={(e) => {
-													if (e.key === "Enter" || e.key === " ") {
-														e.preventDefault();
-													}
-												}}
-												aria-label="Trip Actions"
-											></button>
+										<aside className="absolute top-2 right-2 flex gap-2 rounded-md bg-white/90 p-1 shadow pointer-events-none opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity backdrop-blur-sm">
 											<EditTripDialog
 												trip={trip}
 												onTripUpdated={handleTripUpdated}
@@ -255,6 +239,7 @@ const Dashboard = () => {
 													<Button
 														variant="ghost"
 														size="icon"
+														aria-label="Edit Trip"
 														onClick={(e) => e.stopPropagation()}
 													>
 														<svg
@@ -277,6 +262,7 @@ const Dashboard = () => {
 											<Button
 												variant="ghost"
 												size="icon"
+												aria-label="Delete Trip"
 												onClick={(e) => {
 													e.stopPropagation();
 													if (window.confirm("Delete this trip?")) {
@@ -299,7 +285,7 @@ const Dashboard = () => {
 													/>
 												</svg>
 											</Button>
-										</div>
+										</aside>
 										<CardHeader className="pb-3">
 											<div className="flex justify-between items-start mb-2">
 												<CardTitle className="text-lg group-hover:text-blue-600 transition-colors line-clamp-2">
