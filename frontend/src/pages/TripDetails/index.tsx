@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { CreateItineraryItemForm } from "@/components/CreateItineraryItemForm";
 import { EditItineraryItemDialog } from "@/components/EditItineraryItemForm";
 import { EditSharedTripDialog } from "@/components/EditSharedTripForm";
@@ -333,30 +334,30 @@ const TripDetails = () => {
 													</Button>
 												}
 											/>
-											<Button
-												variant="ghost"
-												size="icon"
-												onClick={() => {
-													if (window.confirm("Delete this item?")) {
-														handleItineraryItemDeleted(item.itineraryItemId);
-													}
-												}}
-											>
-												<svg
-													className="w-4 h-4"
-													fill="none"
-													stroke="currentColor"
-													viewBox="0 0 24 24"
-												>
-													<title>Delete Item Icon</title>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M6 18L18 6M6 6l12 12"
-													/>
-												</svg>
-											</Button>
+											<ConfirmDialog
+												title="Delete this item?"
+												onConfirm={() =>
+													handleItineraryItemDeleted(item.itineraryItemId)
+												}
+												trigger={
+													<Button variant="ghost" size="icon">
+														<svg
+															className="w-4 h-4"
+															fill="none"
+															stroke="currentColor"
+															viewBox="0 0 24 24"
+														>
+															<title>Delete Item Icon</title>
+															<path
+																strokeLinecap="round"
+																strokeLinejoin="round"
+																strokeWidth={2}
+																d="M6 18L18 6M6 6l12 12"
+															/>
+														</svg>
+													</Button>
+												}
+											/>
 										</div>
 									</div>
 								))
@@ -434,36 +435,30 @@ const TripDetails = () => {
 															</Button>
 														}
 													/>
-													<Button
-														variant="ghost"
-														size="icon"
-														onClick={() => {
-															if (
-																window.confirm(
-																	"Remove this user from the trip?",
-																)
-															) {
-																handleSharedTripDeleted(
-																	sharedTrip.sharedTripId,
-																);
-															}
-														}}
-													>
-														<svg
-															className="w-4 h-4"
-															fill="none"
-															stroke="currentColor"
-															viewBox="0 0 24 24"
-														>
-															<title>Delete Share Icon</title>
-															<path
-																strokeLinecap="round"
-																strokeLinejoin="round"
-																strokeWidth={2}
-																d="M6 18L18 6M6 6l12 12"
-															/>
-														</svg>
-													</Button>
+													<ConfirmDialog
+														title="Remove this user from the trip?"
+														onConfirm={() =>
+															handleSharedTripDeleted(sharedTrip.sharedTripId)
+														}
+														trigger={
+															<Button variant="ghost" size="icon">
+																<svg
+																	className="w-4 h-4"
+																	fill="none"
+																	stroke="currentColor"
+																	viewBox="0 0 24 24"
+																>
+																	<title>Delete Share Icon</title>
+																	<path
+																		strokeLinecap="round"
+																		strokeLinejoin="round"
+																		strokeWidth={2}
+																		d="M6 18L18 6M6 6l12 12"
+																	/>
+																</svg>
+															</Button>
+														}
+													/>
 												</div>
 											</div>
 										</div>

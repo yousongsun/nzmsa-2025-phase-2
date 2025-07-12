@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { CreateTripDialog } from "@/components/CreateTripForm";
 import { EditTripDialog } from "@/components/EditTripForm";
 import { UserSearchDialog } from "@/components/UserSearchDialog";
@@ -259,32 +260,33 @@ const Dashboard = () => {
 													</Button>
 												}
 											/>
-											<Button
-												variant="ghost"
-												size="icon"
-												aria-label="Delete Trip"
-												onClick={(e) => {
-													e.stopPropagation();
-													if (window.confirm("Delete this trip?")) {
-														handleTripDeleted(trip.tripId);
-													}
-												}}
-											>
-												<svg
-													className="w-4 h-4"
-													fill="none"
-													stroke="currentColor"
-													viewBox="0 0 24 24"
-												>
-													<title>Delete Trip Icon</title>
-													<path
-														strokeLinecap="round"
-														strokeLinejoin="round"
-														strokeWidth={2}
-														d="M6 18L18 6M6 6l12 12"
-													/>
-												</svg>
-											</Button>
+											<ConfirmDialog
+												title="Delete this trip?"
+												onConfirm={() => handleTripDeleted(trip.tripId)}
+												trigger={
+													<Button
+														variant="ghost"
+														size="icon"
+														aria-label="Delete Trip"
+														onClick={(e) => e.stopPropagation()}
+													>
+														<svg
+															className="w-4 h-4"
+															fill="none"
+															stroke="currentColor"
+															viewBox="0 0 24 24"
+														>
+															<title>Delete Trip Icon</title>
+															<path
+																strokeLinecap="round"
+																strokeLinejoin="round"
+																strokeWidth={2}
+																d="M6 18L18 6M6 6l12 12"
+															/>
+														</svg>
+													</Button>
+												}
+											/>
 										</aside>
 										<CardHeader className="pb-3">
 											<div className="flex justify-between items-start mb-2">
