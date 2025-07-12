@@ -91,16 +91,14 @@ const Dashboard = () => {
 
 	if (loading) {
 		return (
-			<div className="container mx-auto p-4">
-				<div className="flex items-center justify-center min-h-[400px]">
-					<div className="text-lg">Loading your trips...</div>
-				</div>
+			<div className="flex items-center justify-center min-h-[400px]">
+				<div className="text-lg">Loading your trips...</div>
 			</div>
 		);
 	}
 
 	return (
-		<div className="container mx-auto p-4 max-w-6xl">
+		<div className="max-w-6xl mx-auto">
 			{/* Header */}
 			<div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
 				<div>
@@ -116,7 +114,7 @@ const Dashboard = () => {
 					<CreateTripDialog
 						onTripCreated={handleTripCreated}
 						trigger={
-							<Button size="lg">
+							<Button size="lg" data-create-trip-trigger>
 								<svg
 									className="w-5 h-5 mr-2"
 									fill="none"

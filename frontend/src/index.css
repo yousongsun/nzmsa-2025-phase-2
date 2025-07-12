@@ -41,6 +41,78 @@
 	--color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* Navigation Enhancements */
+.nav-blur {
+	backdrop-filter: blur(12px);
+	-webkit-backdrop-filter: blur(12px);
+}
+
+/* Smooth transitions for layout changes */
+.layout-transition {
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom scrollbar for sidebar and content */
+.custom-scrollbar::-webkit-scrollbar {
+	width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+	background: hsl(var(--border));
+	border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+	background: hsl(var(--border) / 0.8);
+}
+
+/* Gradient backgrounds */
+.gradient-bg {
+	background: linear-gradient(
+		135deg,
+		hsl(var(--primary) / 0.05) 0%,
+		hsl(var(--secondary) / 0.05) 100%
+	);
+}
+
+/* Enhanced focus states */
+.focus-ring {
+	@apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+}
+
+/* Animation classes */
+.animate-slide-in {
+	animation: slideIn 0.3s ease-out;
+}
+
+.animate-fade-in {
+	animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+	from {
+		transform: translateX(-100%);
+		opacity: 0;
+	}
+	to {
+		transform: translateX(0);
+		opacity: 1;
+	}
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
 :root {
 	--radius: 0.625rem;
 	--background: oklch(1 0 0);
