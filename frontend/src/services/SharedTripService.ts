@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { SharedTrip } from "@/models/shared-trip";
+import type { PermissionLevel, SharedTrip } from "@/models/shared-trip";
 
 const API_BASE_URL =
 	import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5042";
@@ -28,6 +28,18 @@ export const createSharedTrip = async (
 	const response = await axios.post(
 		`${API_BASE_URL}/api/trips/${tripId}/shared-trips`,
 		sharedTrip,
+		getAuthHeaders(),
+	);
+	return response.data;
+};
+
+export const shareTrip = async (
+	tripId: number,
+	data: { email: string; permissionLevel: PermissionLevel },
+): Promise<SharedTrip | { pending: boolean }> => {
+	const response = await axios.post(
+		`${API_BASE_URL}/api/trips/${tripId}/shared-trips/share`,
+		data,
 		getAuthHeaders(),
 	);
 	return response.data;

@@ -12,11 +12,19 @@ namespace backend.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _repository;
+        private readonly ITripInviteRepository _inviteRepository;
+        private readonly ISharedTripRepository _sharedTripRepository;
         private readonly TokenService _tokenService;
 
-        public UsersController(IUserRepository repository, TokenService tokenService)
+        public UsersController(
+            IUserRepository repository,
+            ITripInviteRepository inviteRepository,
+            ISharedTripRepository sharedTripRepository,
+            TokenService tokenService)
         {
             _repository = repository;
+            _inviteRepository = inviteRepository;
+            _sharedTripRepository = sharedTripRepository;
             _tokenService = tokenService;
         }
 
@@ -170,6 +178,23 @@ namespace backend.Controllers
         public async Task<ActionResult<UserResponse>> PostUser(User user)
         {
             await _repository.AddUserAsync(user);
+
+            if (!string.IsNullOrEmpty(user.Email))
+            {
+                var invites = await _inviteRepository.GetByEmailAsync(user.Email);
+                foreach (var invite in invites)
+                {
+                    var shared = new SharedTrip
+                    {
+                        TripId = invite.TripId,
+                        UserId = user.UserId,
+                        PermissionLevel = invite.PermissionLevel
+                    };
+                    await _sharedTripRepository.AddAsync(shared);
+                    await _inviteRepository.DeleteAsync(invite.TripInviteId);
+                }
+            }
+
             return CreatedAtAction("GetUser", new { id = user.UserId }, ToUserResponse(user));
         }
 

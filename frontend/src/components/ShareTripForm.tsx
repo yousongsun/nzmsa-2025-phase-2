@@ -20,8 +20,7 @@ import {
 } from "@/components/ui/select";
 import type { SharedTrip } from "@/models/shared-trip";
 import { PermissionLevel } from "@/models/shared-trip";
-import { createSharedTrip } from "@/services/SharedTripService";
-import { getUserByEmail } from "@/services/UserService";
+import { shareTrip } from "@/services/SharedTripService";
 
 interface ShareTripDialogProps {
 	tripId: number;
@@ -60,13 +59,15 @@ export function ShareTripDialog({
 				throw new Error("Please enter a valid email address");
 			}
 
-			const user = await getUserByEmail(email.trim());
-			const newSharedTrip = await createSharedTrip(tripId, {
-				userId: user.userId,
+			const result = await shareTrip(tripId, {
+				email: email.trim(),
 				permissionLevel,
 			});
 
-			onSharedTripCreated(newSharedTrip);
+			if (result && "sharedTripId" in result) {
+				onSharedTripCreated(result);
+			}
+
 			setSuccess(true);
 			setEmail("");
 			setPermissionLevel(PermissionLevel.View);

@@ -11,10 +11,17 @@ namespace backend.Controllers
     public class SharedTripsController : ControllerBase
     {
         private readonly ISharedTripRepository _sharedTripRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly ITripInviteRepository _inviteRepository;
 
-        public SharedTripsController(ISharedTripRepository sharedTripRepository)
+        public SharedTripsController(
+            ISharedTripRepository sharedTripRepository,
+            IUserRepository userRepository,
+            ITripInviteRepository inviteRepository)
         {
             _sharedTripRepository = sharedTripRepository;
+            _userRepository = userRepository;
+            _inviteRepository = inviteRepository;
         }
 
         [HttpGet]
@@ -56,6 +63,32 @@ namespace backend.Controllers
             await _sharedTripRepository.AddAsync(sharedTrip);
 
             return CreatedAtAction(nameof(GetSharedTrip), new { tripId = sharedTrip.TripId, id = sharedTrip.SharedTripId }, sharedTrip);
+        }
+
+        [HttpPost("share")]
+        public async Task<IActionResult> ShareTripWithEmail(long tripId, ShareTripRequest request)
+        {
+            var user = await _userRepository.GetUserByEmailAsync(request.Email);
+            if (user != null)
+            {
+                var sharedTrip = new SharedTrip
+                {
+                    TripId = tripId,
+                    UserId = user.UserId,
+                    PermissionLevel = request.PermissionLevel
+                };
+                await _sharedTripRepository.AddAsync(sharedTrip);
+                return Ok(sharedTrip);
+            }
+
+            var invite = new TripInvite
+            {
+                TripId = tripId,
+                Email = request.Email,
+                PermissionLevel = request.PermissionLevel
+            };
+            await _inviteRepository.AddAsync(invite);
+            return Ok(new { pending = true });
         }
 
         [HttpDelete("{id}")]

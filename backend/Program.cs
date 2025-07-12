@@ -57,6 +57,7 @@ builder.Services.AddScoped<ITripRepository, TripRepository>();
 builder.Services.AddScoped<IItineraryItemRepository, ItineraryItemRepository>();
 builder.Services.AddScoped<ISharedTripRepository, SharedTripRepository>();
 builder.Services.AddScoped<IFollowRepository, FollowRepository>();
+builder.Services.AddScoped<ITripInviteRepository, TripInviteRepository>();
 builder.Services.AddScoped<TokenService>();
 
 // Configure CORS

@@ -15,6 +15,7 @@ namespace backend.Context
         public DbSet<ItineraryItem> ItineraryItems { get; set; } = null!;
         public DbSet<SharedTrip> SharedTrips { get; set; } = null!;
         public DbSet<Follow> Follows { get; set; } = null!;
+        public DbSet<TripInvite> TripInvites { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -58,6 +59,16 @@ namespace backend.Context
                 entity.HasOne(e => e.User)
                     .WithMany()
                     .HasForeignKey(e => e.UserId);
+            });
+
+            // Configure TripInvite entity
+            modelBuilder.Entity<TripInvite>(entity =>
+            {
+                entity.HasKey(e => e.TripInviteId);
+                entity.HasOne<Trip>()
+                    .WithMany()
+                    .HasForeignKey(e => e.TripId);
+                entity.Property(e => e.Email).IsRequired();
             });
 
             // Configure Follow entity
