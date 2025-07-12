@@ -230,6 +230,11 @@ const Dashboard = () => {
 									key={trip.tripId}
 									to={`/trip/${trip.tripId}`}
 									className="group"
+									onClick={(e) => {
+										if ((e.target as HTMLElement).closest("button")) {
+											e.preventDefault();
+										}
+									}}
 								>
 									<Card className="relative h-full hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer">
 										<aside className="absolute top-2 right-2 flex gap-2 rounded-md bg-white/90 p-1 shadow pointer-events-none opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity backdrop-blur-sm">
@@ -241,7 +246,6 @@ const Dashboard = () => {
 														variant="ghost"
 														size="icon"
 														aria-label="Edit Trip"
-														onClick={(e) => e.stopPropagation()}
 													>
 														<svg
 															className="w-4 h-4"
@@ -268,7 +272,6 @@ const Dashboard = () => {
 														variant="ghost"
 														size="icon"
 														aria-label="Delete Trip"
-														onClick={(e) => e.stopPropagation()}
 													>
 														<svg
 															className="w-4 h-4"
