@@ -19,7 +19,10 @@ const Settings = () => {
 
 	useEffect(() => {
 		const fetchUser = async () => {
-			if (!currentUserId) return;
+			if (!currentUserId) {
+				setLoading(false);
+				return;
+			}
 			try {
 				const user = await getUserById(currentUserId);
 				setForm({
@@ -57,6 +60,10 @@ const Settings = () => {
 
 	if (loading) {
 		return <div className="p-4">Loading settings...</div>;
+	}
+
+	if (!currentUserId) {
+		return <div className="p-4">You must be logged in to view this page.</div>;
 	}
 
 	return (

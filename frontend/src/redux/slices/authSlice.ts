@@ -1,11 +1,12 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import { isTokenValid } from "@/lib/auth";
 
 export interface AuthState {
 	token: string | null;
 	isLoggedIn: boolean;
 }
 
-const initialToken = localStorage.getItem("token");
+const initialToken = isTokenValid() ? localStorage.getItem("token") : null;
 const initialState: AuthState = {
 	token: initialToken,
 	isLoggedIn: !!initialToken,

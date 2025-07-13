@@ -13,7 +13,10 @@ const Following = () => {
 
 	useEffect(() => {
 		const fetchFollowing = async () => {
-			if (!currentUserId) return;
+			if (!currentUserId) {
+				setLoading(false);
+				return;
+			}
 			try {
 				const users = await getFollowing(currentUserId);
 				setFollowing(users);
@@ -38,6 +41,10 @@ const Following = () => {
 
 	if (loading) {
 		return <div className="p-4">Loading following...</div>;
+	}
+
+	if (!currentUserId) {
+		return <div className="p-4">You must be logged in to view this page.</div>;
 	}
 
 	return (
