@@ -1,9 +1,10 @@
 import { Bell, LogOut, Menu, Plus, Search, Settings, User } from "lucide-react";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { logout } from "@/redux/slices/authSlice";
 import type { RootState } from "@/redux/store";
 import { Breadcrumb, usePageTitle } from "./Breadcrumb";
 
@@ -14,6 +15,7 @@ interface HeaderProps {
 
 export function Header({ onMenuClick, className }: HeaderProps) {
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 	const pageTitle = usePageTitle();
 	const [showUserMenu, setShowUserMenu] = useState(false);
 	const [showNotifications, setShowNotifications] = useState(false);
@@ -22,7 +24,7 @@ export function Header({ onMenuClick, className }: HeaderProps) {
 	const { isLoggedIn } = useSelector((state: RootState) => state.auth);
 
 	const handleLogout = () => {
-		// Add logout logic here
+		dispatch(logout());
 		navigate("/login");
 	};
 

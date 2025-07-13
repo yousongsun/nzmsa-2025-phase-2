@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -12,9 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-
-const API_BASE_URL =
-	import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5042";
+import { register } from "@/services/AuthService";
 
 export function SignUpForm({
 	className,
@@ -65,17 +62,13 @@ export function SignUpForm({
 
 		setLoading(true);
 		try {
-			await axios.post(
-				`${API_BASE_URL}/api/users`,
-				{
-					firstName: firstName.trim(),
-					lastName: lastName.trim(),
-					email: email.trim(),
-					password,
-					description: description.trim(),
-				},
-				{ withCredentials: true },
-			);
+			await register({
+				firstName: firstName.trim(),
+				lastName: lastName.trim(),
+				email: email.trim(),
+				password,
+				description: description.trim(),
+			});
 
 			setSuccess(true);
 			setFirstName("");
@@ -89,10 +82,10 @@ export function SignUpForm({
 			setTimeout(() => {
 				navigate("/login");
 			}, 2000);
-		} catch (err: any) {
+		} catch (err: unknown) {
 			const errorMessage =
-				err.response?.data?.message ||
-				err.message ||
+				(err as any).response?.data?.message ||
+				(err as any).message ||
 				"An error occurred while creating your account. Please try again.";
 			setError(errorMessage);
 		} finally {

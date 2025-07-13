@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -15,9 +14,7 @@ import { cn } from "@/lib/utils";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { selectIsLoggedIn } from "@/redux/selector/authSelectors";
 import { loginSuccess } from "@/redux/slices/authSlice";
-
-const API_BASE_URL =
-	import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5042";
+import { login, setToken } from "@/services/AuthService";
 
 export function LoginForm({
 	className,
@@ -44,25 +41,24 @@ export function LoginForm({
 		setLoading(true);
 
 		try {
-			const response = await axios.post(
-				`${API_BASE_URL}/api/users/login`,
-				{ email, password },
-				{ withCredentials: true },
-			);
+			const response = await login({ email, password });
 
 			setSuccess(true);
 			setEmail("");
 			setPassword("");
-			dispatch(loginSuccess(response.data.token));
+
+			// Store token and update Redux state
+			setToken(response.token);
+			dispatch(loginSuccess(response.token));
 
 			// Add a small delay to show success message
 			setTimeout(() => {
 				navigate("/dashboard");
 			}, 1000);
-		} catch (err: any) {
+		} catch (err: unknown) {
 			const errorMessage =
-				err.response?.data?.message ||
-				err.message ||
+				(err as any).response?.data?.message ||
+				(err as any).message ||
 				"An error occurred while logging in. Please try again.";
 			setError(errorMessage);
 		} finally {

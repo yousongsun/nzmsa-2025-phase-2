@@ -121,6 +121,12 @@ using (var scope = app.Services.CreateScope())
         // create SQLite or in-memory schema
         dbContext.Database.EnsureCreated();
     }
+
+    // Seed the database with initial data (only in development)
+    if (app.Environment.IsDevelopment())
+    {
+        await DbSeeder.SeedDataAsync(dbContext);
+    }
 }
 
 // Configure Middleware
