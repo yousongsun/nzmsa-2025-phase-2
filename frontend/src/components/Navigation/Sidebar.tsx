@@ -29,12 +29,6 @@ const navigationItems: NavigationItem[] = [
 		path: "/dashboard",
 	},
 	{
-		id: "trips",
-		label: "My Trips",
-		icon: MapPin,
-		path: "/dashboard",
-	},
-	{
 		id: "profile",
 		label: "Profile",
 		icon: User,
