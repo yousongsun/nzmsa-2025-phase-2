@@ -21,13 +21,15 @@ namespace backend.Controllers
         [HttpPost("{userId}/follow")]
         public async Task<IActionResult> FollowUser(long userId)
         {
-            var followerIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (followerIdClaim == null)
+            var followerIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                ?? User.FindFirst("nameid")?.Value
+                ?? User.FindFirst("userid")?.Value;
+
+            if (string.IsNullOrEmpty(followerIdClaim) || !long.TryParse(followerIdClaim, out var followerId))
             {
-                return Unauthorized();
+                return Unauthorized("Invalid user token");
             }
 
-            var followerId = long.Parse(followerIdClaim);
             await _followRepository.FollowUserAsync(followerId, userId);
             return Ok();
         }
@@ -35,13 +37,15 @@ namespace backend.Controllers
         [HttpPost("{userId}/unfollow")]
         public async Task<IActionResult> UnfollowUser(long userId)
         {
-            var followerIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (followerIdClaim == null)
+            var followerIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                ?? User.FindFirst("nameid")?.Value
+                ?? User.FindFirst("userid")?.Value;
+
+            if (string.IsNullOrEmpty(followerIdClaim) || !long.TryParse(followerIdClaim, out var followerId))
             {
-                return Unauthorized();
+                return Unauthorized("Invalid user token");
             }
 
-            var followerId = long.Parse(followerIdClaim);
             await _followRepository.UnfollowUserAsync(followerId, userId);
             return Ok();
         }

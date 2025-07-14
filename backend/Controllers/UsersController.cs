@@ -46,8 +46,8 @@ namespace backend.Controllers
         [Authorize]
         public async Task<ActionResult<UserResponse>> GetCurrentUser()
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value 
-                ?? User.FindFirst("nameid")?.Value 
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                ?? User.FindFirst("nameid")?.Value
                 ?? User.FindFirst("userid")?.Value;
 
             if (string.IsNullOrEmpty(userIdClaim) || !long.TryParse(userIdClaim, out var userId))
