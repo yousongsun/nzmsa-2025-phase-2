@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { Layout } from "@/components/Navigation";
 import PrivateRoute from "@/components/PrivateRoute";
+import ProfileRedirect from "@/components/ProfileRedirect";
 import Dashboard from "@/pages/Dashboard";
 import Following from "@/pages/Following";
 import Login from "@/pages/Login";
@@ -18,6 +19,7 @@ function App() {
 				<Route element={<Layout />}>
 					<Route path="/dashboard" element={<Dashboard />} />
 					<Route path="/trip/:id" element={<TripDetails />} />
+					<Route path="/profile" element={<ProfileRedirect />} />
 					<Route path="/profile/:id" element={<Profile />} />
 					<Route path="/following" element={<Following />} />
 					<Route path="/settings" element={<Settings />} />

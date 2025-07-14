@@ -213,7 +213,7 @@ export function Header({ onMenuClick, className }: HeaderProps) {
 
 							<div className="py-2">
 								<Link
-									to="/profile/1"
+									to="/profile"
 									className="flex items-center gap-3 px-4 py-2 text-sm text-foreground hover:bg-accent/50 transition-colors"
 									onClick={() => setShowUserMenu(false)}
 								>
