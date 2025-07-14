@@ -148,7 +148,12 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowReactApp");
 
 // Configure static file serving for uploads
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(
+        Path.Combine(app.Environment.ContentRootPath, "uploads")),
+    RequestPath = "/uploads"
+});
 
 app.UseHttpsRedirection();
 

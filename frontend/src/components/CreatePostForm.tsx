@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { ImageIcon, X } from "lucide-react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -7,6 +8,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { type CreatePostRequest, PostPrivacy } from "@/models/post";
@@ -18,8 +20,48 @@ interface CreatePostFormProps {
 
 export function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
 	const [content, setContent] = useState("");
+	const [selectedFile, setSelectedFile] = useState<File | null>(null);
+	const [imagePreview, setImagePreview] = useState<string | null>(null);
+	const [imageAltText, setImageAltText] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
+
+	const fileInputRef = useRef<HTMLInputElement>(null);
+
+	const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const file = event.target.files?.[0];
+		if (file) {
+			if (file.size > 5 * 1024 * 1024) {
+				// 5MB limit
+				setError("Image size must be less than 5MB");
+				return;
+			}
+
+			if (!file.type.startsWith("image/")) {
+				setError("Please select a valid image file");
+				return;
+			}
+
+			setSelectedFile(file);
+			setError("");
+
+			// Create preview
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				setImagePreview(e.target?.result as string);
+			};
+			reader.readAsDataURL(file);
+		}
+	};
+
+	const handleRemoveImage = () => {
+		setSelectedFile(null);
+		setImagePreview(null);
+		setImageAltText("");
+		if (fileInputRef.current) {
+			fileInputRef.current.value = "";
+		}
+	};
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -38,10 +80,21 @@ export function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
 				privacy: PostPrivacy.Public,
 			};
 
+			if (selectedFile) {
+				postData.image = selectedFile;
+				postData.imageAltText = imageAltText;
+			}
+
 			await createPost(postData);
 
 			// Reset form
 			setContent("");
+			setSelectedFile(null);
+			setImagePreview(null);
+			setImageAltText("");
+			if (fileInputRef.current) {
+				fileInputRef.current.value = "";
+			}
 
 			if (onPostCreated) {
 				onPostCreated(true);
@@ -54,6 +107,17 @@ export function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
 			}
 		} finally {
 			setLoading(false);
+		}
+	};
+
+	const clearForm = () => {
+		setContent("");
+		setSelectedFile(null);
+		setImagePreview(null);
+		setImageAltText("");
+		setError("");
+		if (fileInputRef.current) {
+			fileInputRef.current.value = "";
 		}
 	};
 
@@ -87,6 +151,74 @@ export function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
 							{content.length}/2000 characters
 						</div>
 					</div>
+
+					{/* Image Upload */}
+					<div className="space-y-2">
+						<Label>Add Image</Label>
+						<div className="flex items-center space-x-2">
+							<Button
+								type="button"
+								variant="outline"
+								onClick={() => fileInputRef.current?.click()}
+								disabled={loading}
+							>
+								<ImageIcon className="h-4 w-4 mr-2" />
+								{selectedFile ? "Change Image" : "Add Image"}
+							</Button>
+							{imagePreview && (
+								<Button
+									type="button"
+									variant="outline"
+									onClick={handleRemoveImage}
+									disabled={loading}
+								>
+									<X className="h-4 w-4 mr-2" />
+									Remove Image
+								</Button>
+							)}
+							<input
+								ref={fileInputRef}
+								type="file"
+								accept="image/*"
+								onChange={handleFileSelect}
+								className="hidden"
+							/>
+						</div>
+
+						{imagePreview && (
+							<div className="relative">
+								<img
+									src={imagePreview}
+									alt="Preview"
+									className="w-full h-48 object-cover rounded-lg border"
+								/>
+								<Button
+									type="button"
+									variant="destructive"
+									size="sm"
+									onClick={handleRemoveImage}
+									className="absolute top-2 right-2"
+								>
+									<X className="h-4 w-4" />
+								</Button>
+							</div>
+						)}
+
+						{imagePreview && (
+							<div className="space-y-2">
+								<Label htmlFor="imageAltText">
+									Image Description (for accessibility)
+								</Label>
+								<Input
+									id="imageAltText"
+									placeholder="Briefly describe the image..."
+									value={imageAltText}
+									onChange={(e) => setImageAltText(e.target.value)}
+									maxLength={500}
+								/>
+							</div>
+						)}
+					</div>
 				</CardContent>
 
 				<CardFooter className="flex justify-between">
@@ -98,10 +230,7 @@ export function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
 						<Button
 							type="button"
 							variant="outline"
-							onClick={() => {
-								setContent("");
-								setError("");
-							}}
+							onClick={clearForm}
 							disabled={loading}
 						>
 							Clear
