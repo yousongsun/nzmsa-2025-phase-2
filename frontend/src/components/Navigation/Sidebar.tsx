@@ -3,6 +3,7 @@ import {
 	ChevronRight,
 	Home,
 	MapPin,
+	MessageSquare,
 	Settings,
 	User,
 	Users,
@@ -27,6 +28,12 @@ const navigationItems: NavigationItem[] = [
 		label: "Dashboard",
 		icon: Home,
 		path: "/dashboard",
+	},
+	{
+		id: "posts",
+		label: "Posts",
+		icon: MessageSquare,
+		path: "/posts",
 	},
 	{
 		id: "profile",

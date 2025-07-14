@@ -49,7 +49,19 @@ export function LoginForm({
 
 			// Store token and update Redux state
 			setToken(response.token);
-			dispatch(loginSuccess(response.token));
+			// For now, just set the token. In a real app, you'd get user data from the token or make another API call
+			dispatch(
+				loginSuccess({
+					token: response.token,
+					user: {
+						userId: 1,
+						firstName: "User",
+						lastName: "Demo",
+						email: email,
+						description: "Demo user",
+					},
+				}),
+			);
 
 			// Add a small delay to show success message
 			setTimeout(() => {

@@ -58,6 +58,7 @@ builder.Services.AddScoped<IItineraryItemRepository, ItineraryItemRepository>();
 builder.Services.AddScoped<ISharedTripRepository, SharedTripRepository>();
 builder.Services.AddScoped<IFollowRepository, FollowRepository>();
 builder.Services.AddScoped<ITripInviteRepository, TripInviteRepository>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
 builder.Services.AddScoped<TokenService>();
 
 // Configure CORS
@@ -77,7 +78,12 @@ builder.Services.AddCors(options =>
 builder.Services
     .AddControllers()
     .AddJsonOptions(options =>
-        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        // Configure JSON serializer to handle reference loops
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+    });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -140,6 +146,9 @@ if (app.Environment.IsDevelopment())
 
 // Enable CORS
 app.UseCors("AllowReactApp");
+
+// Configure static file serving for uploads
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 

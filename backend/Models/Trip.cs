@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace backend.Models
 {
@@ -24,8 +25,10 @@ namespace backend.Models
 
         public long UserId { get; set; }
 
+        [JsonIgnore] // User info can be included separately when needed
         public User? User { get; set; }
 
+        [JsonIgnore] // Itinerary items can be loaded separately
         public ICollection<ItineraryItem> ItineraryItems { get; set; } = new List<ItineraryItem>();
     }
 }

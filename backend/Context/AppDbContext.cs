@@ -16,6 +16,9 @@ namespace backend.Context
         public DbSet<SharedTrip> SharedTrips { get; set; } = null!;
         public DbSet<Follow> Follows { get; set; } = null!;
         public DbSet<TripInvite> TripInvites { get; set; } = null!;
+        public DbSet<Post> Posts { get; set; } = null!;
+        public DbSet<PostLike> PostLikes { get; set; } = null!;
+        public DbSet<PostComment> PostComments { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -83,6 +86,56 @@ namespace backend.Context
                     .WithMany()
                     .HasForeignKey(e => e.FollowingId)
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // Configure Post entity
+            modelBuilder.Entity<Post>(entity =>
+            {
+                entity.HasKey(e => e.PostId);
+                entity.Property(e => e.Content).IsRequired().HasMaxLength(2000);
+                entity.Property(e => e.ImageUrl).HasMaxLength(1000);
+                entity.Property(e => e.ImageAltText).HasMaxLength(500);
+                entity.Property(e => e.Privacy)
+                      .HasConversion<string>();
+                entity.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(e => e.Trip)
+                    .WithMany()
+                    .HasForeignKey(e => e.TripId)
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            // Configure PostLike entity
+            modelBuilder.Entity<PostLike>(entity =>
+            {
+                entity.HasKey(e => e.PostLikeId);
+                entity.HasOne(e => e.Post)
+                    .WithMany(p => p.Likes)
+                    .HasForeignKey(e => e.PostId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                // Ensure unique constraint - one like per user per post
+                entity.HasIndex(e => new { e.PostId, e.UserId }).IsUnique();
+            });
+
+            // Configure PostComment entity
+            modelBuilder.Entity<PostComment>(entity =>
+            {
+                entity.HasKey(e => e.PostCommentId);
+                entity.Property(e => e.Content).IsRequired().HasMaxLength(1000);
+                entity.HasOne(e => e.Post)
+                    .WithMany(p => p.Comments)
+                    .HasForeignKey(e => e.PostId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

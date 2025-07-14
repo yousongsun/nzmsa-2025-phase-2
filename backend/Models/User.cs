@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 
 namespace backend.Models
@@ -21,6 +22,7 @@ namespace backend.Models
 
         public string? ProfilePicture { get; set; }
 
+        [JsonIgnore] // Prevent circular reference - trips can be loaded separately
         public ICollection<Trip> Trips { get; set; } = new List<Trip>();
     }
 }
