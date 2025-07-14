@@ -39,6 +39,20 @@ export const register = async (userData: RegisterRequest): Promise<User> => {
 	return response.data;
 };
 
+export const getCurrentUser = async (): Promise<User> => {
+	const token = getToken();
+	if (!token) {
+		throw new Error("No authentication token found");
+	}
+
+	const response = await axios.get(`${API_BASE_URL}/api/users/current`, {
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
+	});
+	return response.data;
+};
+
 export const logout = () => {
 	localStorage.removeItem("token");
 };

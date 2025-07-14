@@ -13,6 +13,14 @@ const getAuthHeaders = () => {
 	};
 };
 
+export const getCurrentUser = async (): Promise<User> => {
+	const response = await axios.get(
+		`${API_BASE_URL}/api/users/current`,
+		getAuthHeaders(),
+	);
+	return response.data;
+};
+
 export const getUserByEmail = async (email: string): Promise<User> => {
 	const encoded = encodeURIComponent(email);
 	const response = await axios.get(

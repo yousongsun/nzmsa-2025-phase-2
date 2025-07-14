@@ -37,6 +37,9 @@ namespace backend.Services
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Email),
                 new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim("nameid", user.UserId.ToString()), // Explicit nameid claim for frontend
+                new Claim("userid", user.UserId.ToString()), // Alternative claim name
+                new Claim("email", user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 

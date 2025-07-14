@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using backend.Models;
 using backend.Services;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace backend.Controllers
 {
@@ -38,6 +39,30 @@ namespace backend.Controllers
                 Email = user.Email,
                 Description = user.Description
             };
+        }
+
+        // GET: api/Users/current
+        [HttpGet("current")]
+        [Authorize]
+        public async Task<ActionResult<UserResponse>> GetCurrentUser()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value 
+                ?? User.FindFirst("nameid")?.Value 
+                ?? User.FindFirst("userid")?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !long.TryParse(userIdClaim, out var userId))
+            {
+                return Unauthorized("Invalid user token");
+            }
+
+            var user = await _repository.GetUserByIdAsync(userId);
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            return Ok(ToUserResponse(user));
         }
 
         // GET: api/Users
