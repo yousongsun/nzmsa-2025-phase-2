@@ -122,7 +122,7 @@ export function CreatePostForm({ onPostCreated }: CreatePostFormProps) {
 	};
 
 	return (
-		<Card className="w-full max-w-2xl mx-auto">
+		<Card className="w-full max-w-md mx-auto">
 			<CardHeader>
 				<CardTitle>Create New Post</CardTitle>
 			</CardHeader>

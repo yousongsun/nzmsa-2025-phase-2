@@ -204,9 +204,12 @@ export function Sidebar({
 						isCollapsed && !isMobile && "justify-center",
 					)}
 				>
-					<div className="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center">
+					<Link
+						to="/profile"
+						className="w-8 h-8 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center hover:opacity-80 transition"
+					>
 						<User className="w-4 h-4 text-white" />
-					</div>
+					</Link>
 					{(!isCollapsed || isMobile) && (
 						<div className="flex-1 min-w-0">
 							<p className="text-sm font-medium truncate">Welcome back!</p>

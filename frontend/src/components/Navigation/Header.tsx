@@ -87,19 +87,19 @@ export function Header({ onMenuClick, className }: HeaderProps) {
 			</div>
 
 			{/* Search Bar */}
-			<div className="hidden md:flex relative">
+			{/* <div className="hidden md:flex relative">
 				<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 				<input
 					type="text"
 					placeholder="Search trips, users..."
 					className="pl-10 pr-4 py-2 w-64 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
 				/>
-			</div>
+			</div> */}
 
 			{/* Action Buttons */}
 			<div className="flex items-center gap-2">
 				{/* Create Trip Button */}
-				<Button
+				{/* <Button
 					size="sm"
 					className="hidden sm:flex gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
 					onClick={() => {
@@ -114,7 +114,7 @@ export function Header({ onMenuClick, className }: HeaderProps) {
 				>
 					<Plus className="w-4 h-4" />
 					<span className="hidden lg:inline">New Trip</span>
-				</Button>
+				</Button> */}
 
 				{/* Mobile Search */}
 				<Button variant="ghost" size="icon" className="md:hidden">
@@ -206,9 +206,9 @@ export function Header({ onMenuClick, className }: HeaderProps) {
 						<div className="absolute right-0 mt-2 w-56 bg-popover border border-border rounded-lg shadow-lg z-50">
 							<div className="p-4 border-b border-border">
 								<p className="text-sm font-medium text-foreground">Welcome!</p>
-								<p className="text-xs text-muted-foreground">
+								{/* <p className="text-xs text-muted-foreground">
 									user@example.com
-								</p>
+								</p> */}
 							</div>
 
 							<div className="py-2">
