@@ -381,7 +381,7 @@ namespace backend.Controllers
             return new PostDto
             {
                 PostId = post.PostId,
-                Content = post.Content,
+                Content = post.Content ?? string.Empty,
                 ImageUrl = post.ImageUrl,
                 ImageAltText = post.ImageAltText,
                 CreatedAt = post.CreatedAt,
@@ -409,7 +409,7 @@ namespace backend.Controllers
                 Comments = post.Comments?.Select(c => new PostCommentDto
                 {
                     PostCommentId = c.PostCommentId,
-                    Content = c.Content,
+                    Content = c.Content ?? string.Empty,
                     CreatedAt = c.CreatedAt,
                     UpdatedAt = c.UpdatedAt,
                     PostId = c.PostId,

@@ -111,6 +111,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
+// Ensure uploads and uploads/posts directories exist
+var uploadsPath = Path.Combine(app.Environment.ContentRootPath, "uploads");
+var postsPath = Path.Combine(uploadsPath, "posts");
+if (!Directory.Exists(uploadsPath))
+{
+    Directory.CreateDirectory(uploadsPath);
+}
+if (!Directory.Exists(postsPath))
+{
+    Directory.CreateDirectory(postsPath);
+}
 
 // Initialize Database
 using (var scope = app.Services.CreateScope())
@@ -129,7 +140,7 @@ using (var scope = app.Services.CreateScope())
     }
 
     // Seed the database with initial data (only in development)
-    if (app.Environment.IsDevelopment())
+    if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     {
         await DbSeeder.SeedDataAsync(dbContext);
     }

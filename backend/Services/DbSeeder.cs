@@ -21,40 +21,40 @@ namespace backend.Services
                 {
                     FirstName = "John",
                     LastName = "Doe",
-                    Email = "john.doe@example.com",
-                    Password = "password123", // This will be hashed by the repository
+                    Email = "user1@nzmsa.co.nz",
+                    Password = "AQAAAAIAAYagAAAAEC8BZRKdv4E6uhvTT6u9utZ2A/TPn2iA7LRBAaS4KX5og7V+v60dMy3jyuFt5RZgQg==", // password123
                     Description = "Adventure seeker and travel enthusiast"
                 },
                 new User
                 {
                     FirstName = "Jane",
                     LastName = "Smith",
-                    Email = "jane.smith@example.com",
-                    Password = "password123",
+                    Email = "user2@nzmsa.co.nz",
+                    Password = "AQAAAAIAAYagAAAAEC8BZRKdv4E6uhvTT6u9utZ2A/TPn2iA7LRBAaS4KX5og7V+v60dMy3jyuFt5RZgQg==",
                     Description = "Love exploring new cultures and cuisines"
                 },
                 new User
                 {
                     FirstName = "Mike",
                     LastName = "Johnson",
-                    Email = "mike.johnson@example.com",
-                    Password = "password123",
+                    Email = "user3@nzmsa.co.nz",
+                    Password = "AQAAAAIAAYagAAAAEC8BZRKdv4E6uhvTT6u9utZ2A/TPn2iA7LRBAaS4KX5og7V+v60dMy3jyuFt5RZgQg==",
                     Description = "Digital nomad and photographer"
                 },
                 new User
                 {
                     FirstName = "Alice",
                     LastName = "Brown",
-                    Email = "alice.brown@example.com",
-                    Password = "password123",
+                    Email = "user4@nzmsa.co.nz",
+                    Password = "AQAAAAIAAYagAAAAEC8BZRKdv4E6uhvTT6u9utZ2A/TPn2iA7LRBAaS4KX5og7V+v60dMy3jyuFt5RZgQg==",
                     Description = "Hiker and outdoor lover"
                 },
                 new User
                 {
                     FirstName = "Bob",
                     LastName = "Williams",
-                    Email = "bob.williams@example.com",
-                    Password = "password123",
+                    Email = "user5@nzmsa.co.nz",
+                    Password = "AQAAAAIAAYagAAAAEC8BZRKdv4E6uhvTT6u9utZ2A/TPn2iA7LRBAaS4KX5og7V+v60dMy3jyuFt5RZgQg==",
                     Description = "History buff and foodie"
                 }
             };
