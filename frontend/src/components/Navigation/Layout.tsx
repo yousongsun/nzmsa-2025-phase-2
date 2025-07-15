@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Header } from "./Header";
@@ -52,17 +52,17 @@ export function Layout({ className }: LayoutProps) {
 		return () => window.removeEventListener("keydown", handleKeyDown);
 	}, [sidebarCollapsed, mobileSidebarOpen]);
 
-	const handleSidebarToggle = () => {
+	const handleSidebarToggle = useCallback(() => {
 		setSidebarCollapsed(!sidebarCollapsed);
-	};
+	}, [sidebarCollapsed]);
 
-	const handleMobileSidebarToggle = () => {
-		setMobileSidebarOpen(!mobileSidebarOpen);
-	};
+	const handleMobileSidebarToggle = useCallback(() => {
+		setMobileSidebarOpen((prev) => !prev);
+	}, []);
 
-	const handleMobileSidebarClose = () => {
+	const handleMobileSidebarClose = useCallback(() => {
 		setMobileSidebarOpen(false);
-	};
+	}, []);
 
 	return (
 		<div className={cn("min-h-screen bg-background", className)}>
@@ -95,14 +95,6 @@ export function Layout({ className }: LayoutProps) {
 					</main>
 				</div>
 			</div>
-
-			{/* Background overlay for mobile when sidebar is open */}
-			{mobileSidebarOpen && (
-				<div
-					className="fixed inset-0 bg-black/20 z-30 md:hidden"
-					aria-hidden="true"
-				/>
-			)}
 		</div>
 	);
 }

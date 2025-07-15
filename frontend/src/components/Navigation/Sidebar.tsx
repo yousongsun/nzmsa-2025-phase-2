@@ -9,7 +9,7 @@ import {
 	Users,
 	X,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -72,13 +72,26 @@ export function Sidebar({
 }: SidebarProps) {
 	const location = useLocation();
 	const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+	const previousPathname = useRef(location.pathname);
+	const [isMounted, setIsMounted] = useState(false);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: ignore dependency on location.pathname
+	// Track mounted state to prevent initial render flash
 	useEffect(() => {
-		if (isMobile && onClose) {
+		setIsMounted(true);
+	}, []);
+
+	// Only close mobile sidebar when actually navigating to a different page
+	useEffect(() => {
+		if (
+			isMobile &&
+			isOpen &&
+			onClose &&
+			location.pathname !== previousPathname.current
+		) {
 			onClose();
 		}
-	}, [location.pathname, isMobile, onClose]);
+		previousPathname.current = location.pathname;
+	}, [location.pathname, isMobile, isOpen, onClose]);
 
 	const isActive = (path: string) => {
 		if (path === "/dashboard") {
@@ -228,25 +241,43 @@ export function Sidebar({
 			<>
 				{/* Mobile Overlay */}
 				{isOpen && (
-					<button
-						type="button"
-						className="fixed inset-0 bg-black/50 z-40 md:hidden cursor-default"
-						onClick={onClose}
+					<div
+						className="fixed inset-0 bg-black/50 z-[9998] md:hidden"
+						onClick={(e) => {
+							e.preventDefault();
+							e.stopPropagation();
+							onClose?.();
+						}}
+						onKeyUp={(e) => {
+							if (e.key === "Enter" || e.key === " ") {
+								e.preventDefault();
+								e.stopPropagation();
+								onClose?.();
+							}
+						}}
 						onKeyDown={(e) => {
 							if (e.key === "Escape") {
+								e.preventDefault();
+								e.stopPropagation();
 								onClose?.();
 							}
 						}}
 						aria-label="Close sidebar"
+						role="button"
+						tabIndex={0}
 					/>
 				)}
 
 				{/* Mobile Sidebar */}
 				<aside
 					className={cn(
-						"fixed top-0 left-0 h-full w-64 bg-background border-r border-border z-50 transform transition-transform duration-300 md:hidden animate-slide-in",
+						"fixed top-0 left-0 h-full w-64 bg-background border-r border-border z-[9999] transform md:hidden",
+						isMounted && "transition-transform duration-300 ease-in-out",
 						isOpen ? "translate-x-0" : "-translate-x-full",
 					)}
+					onClick={(e) => e.stopPropagation()}
+					onKeyUp={(e) => e.stopPropagation()}
+					onKeyDown={(e) => e.stopPropagation()}
 				>
 					<div className="flex flex-col h-full">{sidebarContent}</div>
 				</aside>

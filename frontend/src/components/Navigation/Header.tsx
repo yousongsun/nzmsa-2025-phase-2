@@ -117,10 +117,10 @@ export function Header({ onMenuClick, className }: HeaderProps) {
 				</Button> */}
 
 				{/* Mobile Search */}
-				<Button variant="ghost" size="icon" className="md:hidden">
+				{/* <Button variant="ghost" size="icon" className="md:hidden">
 					<Search className="w-4 h-4" />
 					<span className="sr-only">Search</span>
-				</Button>
+				</Button> */}
 
 				{/* Notifications */}
 				<div className="relative">
