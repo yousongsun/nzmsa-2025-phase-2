@@ -73,11 +73,15 @@ const Dashboard = () => {
 		const end = new Date(endDate);
 
 		if (today < start) {
-			return { status: "upcoming", color: "bg-blue-100 text-blue-800" };
+			return { status: "upcoming", color: "bg-primary/20 text-primary" };
 		} else if (today >= start && today <= end) {
-			return { status: "ongoing", color: "bg-green-100 text-green-800" };
+			return {
+				status: "ongoing",
+				color:
+					"bg-green-200 dark:bg-green-900/40 text-green-700 dark:text-green-300",
+			};
 		} else {
-			return { status: "completed", color: "bg-gray-100 text-gray-800" };
+			return { status: "completed", color: "bg-muted text-muted-foreground" };
 		}
 	};
 
@@ -102,8 +106,8 @@ const Dashboard = () => {
 			{/* Header */}
 			<div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
 				<div>
-					<h1 className="text-3xl font-bold text-gray-900">Your Trips</h1>
-					<p className="text-gray-600 mt-1">
+					<h1 className="text-3xl font-bold text-foreground">Your Trips</h1>
+					<p className="text-muted-foreground mt-1">
 						{trips.length === 0
 							? "Ready to plan your next adventure?"
 							: `You have ${trips.length} trip${trips.length !== 1 ? "s" : ""}`}
@@ -139,9 +143,9 @@ const Dashboard = () => {
 			{/* Trips Grid */}
 			{trips.length === 0 ? (
 				<div className="text-center py-16">
-					<div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+					<div className="w-24 h-24 mx-auto mb-6 bg-muted rounded-full flex items-center justify-center">
 						<svg
-							className="w-12 h-12 text-gray-400"
+							className="w-12 h-12 text-muted-foreground"
 							fill="none"
 							stroke="currentColor"
 							viewBox="0 0 24 24"
@@ -155,10 +159,10 @@ const Dashboard = () => {
 							/>
 						</svg>
 					</div>
-					<h3 className="text-xl font-semibold text-gray-900 mb-2">
+					<h3 className="text-xl font-semibold text-foreground mb-2">
 						No trips yet
 					</h3>
-					<p className="text-gray-500 mb-6 max-w-md mx-auto">
+					<p className="text-muted-foreground mb-6 max-w-md mx-auto">
 						Start planning your next adventure by creating your first trip. Add
 						destinations, dates, and share with friends!
 					</p>
@@ -235,7 +239,7 @@ const Dashboard = () => {
 									}}
 								>
 									<Card className="relative h-full hover:shadow-lg transition-all duration-200 hover:scale-[1.02] cursor-pointer">
-										<aside className="absolute top-2 right-2 flex gap-2 rounded-md bg-white/90 p-1 shadow pointer-events-none opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity backdrop-blur-sm">
+										<aside className="absolute top-2 right-2 flex gap-2 rounded-md bg-background/90 p-1 shadow pointer-events-none opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity backdrop-blur-sm">
 											<EditTripDialog
 												trip={trip}
 												onTripUpdated={handleTripUpdated}
@@ -300,7 +304,7 @@ const Dashboard = () => {
 													{status}
 												</span>
 											</div>
-											<div className="flex items-center text-gray-600">
+											<div className="flex items-center text-muted-foreground">
 												<svg
 													className="w-4 h-4 mr-1"
 													fill="none"
@@ -328,7 +332,7 @@ const Dashboard = () => {
 										</CardHeader>
 										<CardContent className="pt-0">
 											<div className="space-y-3">
-												<div className="flex items-center text-sm text-gray-500">
+												<div className="flex items-center text-sm text-muted-foreground">
 													<svg
 														className="w-4 h-4 mr-2"
 														fill="none"

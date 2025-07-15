@@ -74,9 +74,9 @@ export const TripMap: React.FC<TripMapProps> = ({
 	if (locations.length === 0) {
 		return (
 			<div
-				className={`${className} bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center`}
+				className={`${className} bg-muted border-2 border-dashed border-border flex items-center justify-center`}
 			>
-				<div className="text-center text-gray-500">
+				<div className="text-center text-muted-foreground">
 					<p className="text-lg">No locations to display</p>
 					<p className="text-sm">
 						Add location coordinates to see items on the map

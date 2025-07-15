@@ -1,4 +1,4 @@
-import { Bell, LogOut, Menu, Plus, Search, Settings, User } from "lucide-react";
+import { Bell, LogOut, Menu, Settings, User } from "lucide-react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";

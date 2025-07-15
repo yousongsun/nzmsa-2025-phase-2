@@ -46,9 +46,9 @@ export const DashboardMap: React.FC<DashboardMapProps> = ({
 	if (locations.length === 0) {
 		return (
 			<div
-				className={`${className} bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center`}
+				className={`${className} bg-muted border-2 border-dashed border-border flex items-center justify-center`}
 			>
-				<div className="text-center text-gray-500">
+				<div className="text-center text-muted-foreground">
 					<p className="text-lg">No trips with locations to display</p>
 					<p className="text-sm">
 						Create trips with locations to see them on the map

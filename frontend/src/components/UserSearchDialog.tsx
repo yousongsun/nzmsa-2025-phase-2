@@ -219,7 +219,7 @@ export function UserSearchDialog({ trigger }: UserSearchDialogProps) {
 								{searchResults.map((user) => (
 									<div
 										key={user.userId}
-										className="flex items-center justify-between p-3 rounded-lg border hover:bg-gray-50"
+										className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted"
 									>
 										<Link
 											to={`/profile/${user.userId}`}

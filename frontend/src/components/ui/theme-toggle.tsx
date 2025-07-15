@@ -9,7 +9,7 @@ import {
 import { useTheme } from "@/lib/theme";
 
 export function ThemeToggle() {
-	const { theme, setTheme, actualTheme } = useTheme();
+	const { theme, setTheme } = useTheme();
 
 	return (
 		<DropdownMenu>

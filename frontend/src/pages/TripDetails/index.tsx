@@ -163,8 +163,10 @@ const TripDetails = () => {
 					<div className="flex justify-between items-start mb-4">
 						<div>
 							<h1 className="text-3xl font-bold mb-2">{trip.name}</h1>
-							<p className="text-lg text-gray-600 mb-2">{trip.destination}</p>
-							<p className="text-sm text-gray-500">
+							<p className="text-lg text-muted-foreground mb-2">
+								{trip.destination}
+							</p>
+							<p className="text-sm text-muted-foreground">
 								{new Date(trip.startDate).toLocaleDateString()} -{" "}
 								{new Date(trip.endDate).toLocaleDateString()}
 							</p>
@@ -238,7 +240,7 @@ const TripDetails = () => {
 					</div>
 
 					{showCreateItineraryItemForm && (
-						<div className="mb-6 p-4 bg-gray-50 rounded-lg">
+						<div className="mb-6 p-4 bg-muted rounded-lg">
 							<CreateItineraryItemForm
 								tripId={trip.tripId}
 								onItineraryItemCreated={handleItineraryItemCreated}
@@ -248,7 +250,7 @@ const TripDetails = () => {
 
 					<div className="space-y-4">
 						{itineraryItems.length === 0 ? (
-							<p className="text-gray-500 text-center py-8">
+							<p className="text-muted-foreground text-center py-8">
 								No itinerary items yet. Add some to see them on the map!
 							</p>
 						) : (
@@ -264,7 +266,7 @@ const TripDetails = () => {
 											type="button"
 											className={`w-full text-left p-4 border rounded-lg cursor-pointer transition-all hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
 												selectedLocationId === `item-${item.itineraryItemId}`
-													? "border-blue-500 bg-blue-50"
+													? "border-blue-500 bg-blue-150"
 													: "border-gray-200 hover:border-gray-300"
 											}`}
 											onClick={() =>
@@ -294,23 +296,23 @@ const TripDetails = () => {
 													{item.type}
 												</span>
 											</div>
-											<p className="text-sm text-gray-600 mb-2">
+											<p className="text-sm text-muted-foreground mb-2">
 												{new Date(item.startTime).toLocaleString()} -{" "}
 												{new Date(item.endTime).toLocaleString()}
 											</p>
 											{item.address && (
-												<p className="text-sm text-gray-500">
+												<p className="text-sm text-muted-foreground">
 													📍 {item.address}
 												</p>
 											)}
 											{item.latitude && item.longitude && (
-												<p className="text-xs text-gray-400 mt-1">
+												<p className="text-xs text-muted-foreground mt-1">
 													Coordinates: {item.latitude.toFixed(4)},{" "}
 													{item.longitude.toFixed(4)}
 												</p>
 											)}
 										</button>
-										<div className="absolute top-2 right-2 flex gap-2 rounded-md bg-white/90 p-1 shadow pointer-events-none opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity backdrop-blur-sm">
+										<div className="absolute top-2 right-2 flex gap-2 rounded-md bg-background/90 p-1 shadow pointer-events-none opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity backdrop-blur-sm">
 											<EditItineraryItemDialog
 												tripId={trip.tripId}
 												item={item}
@@ -370,7 +372,7 @@ const TripDetails = () => {
 					<h2 className="text-xl font-bold mb-4">Shared With</h2>
 					<div className="space-y-3">
 						{sharedTrips.length === 0 ? (
-							<p className="text-gray-500 text-center py-4">
+							<p className="text-muted-foreground text-center py-4">
 								This trip hasn't been shared with anyone yet.
 							</p>
 						) : (
@@ -381,7 +383,7 @@ const TripDetails = () => {
 								return (
 									<div
 										key={sharedTrip.sharedTripId}
-										className="p-3 bg-gray-50 rounded-lg flex justify-between items-center group"
+										className="p-3 bg-muted rounded-lg flex justify-between items-center group"
 									>
 										<div className="flex items-center space-x-3">
 											<div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
@@ -396,7 +398,9 @@ const TripDetails = () => {
 														: `User ID: ${sharedTrip.userId}`}
 												</p>
 												{user && (
-													<p className="text-sm text-gray-500">{user.email}</p>
+													<p className="text-sm text-muted-foreground">
+														{user.email}
+													</p>
 												)}
 											</div>
 										</div>
@@ -411,7 +415,7 @@ const TripDetails = () => {
 												>
 													{sharedTrip.permissionLevel}
 												</span>
-												<div className="absolute -top-1 -right-1 flex gap-2 rounded-md bg-white/90 p-1 shadow pointer-events-none opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity backdrop-blur-sm">
+												<div className="absolute -top-1 -right-1 flex gap-2 rounded-md bg-background/90 p-1 shadow pointer-events-none opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity backdrop-blur-sm">
 													<EditSharedTripDialog
 														tripId={trip.tripId}
 														sharedTrip={sharedTrip}

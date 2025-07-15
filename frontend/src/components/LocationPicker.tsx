@@ -189,9 +189,9 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
 							onFocus={() => searchResults.length > 0 && setShowResults(true)}
 						/>
 						{showResults && searchResults.length > 0 && (
-							<div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
-								<div className="flex justify-between items-center p-2 border-b bg-gray-50">
-									<span className="text-sm font-medium text-gray-700">
+							<div className="absolute top-full left-0 right-0 z-50 mt-1 bg-background border border-border rounded-md shadow-lg max-h-60 overflow-y-auto">
+								<div className="flex justify-between items-center p-2 border-b bg-muted">
+									<span className="text-sm font-medium text-muted-foreground">
 										Search Results ({searchResults.length})
 									</span>
 									<Button
@@ -208,13 +208,13 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
 									<button
 										key={`${result.latitude}-${result.longitude}`}
 										type="button"
-										className="w-full text-left p-3 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none border-b border-gray-100 last:border-b-0"
+										className="w-full text-left p-3 hover:bg-muted/50 focus:bg-muted/50 focus:outline-none border-b border-border/50 last:border-b-0"
 										onClick={() => handleResultSelect(result)}
 									>
-										<div className="text-sm font-medium text-gray-900 truncate">
+										<div className="text-sm font-medium text-foreground truncate">
 											{result.displayName.split(",")[0]}
 										</div>
-										<div className="text-xs text-gray-500 mt-1 line-clamp-2">
+										<div className="text-xs text-muted-foreground mt-1 line-clamp-2">
 											{result.displayName}
 										</div>
 									</button>
@@ -244,7 +244,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
 					<MapPin className="w-4 h-4 mr-1" />
 					Use Current Location
 				</Button>
-				<div className="text-sm text-gray-600 flex items-center">
+				<div className="text-sm text-muted-foreground flex items-center">
 					Click on the map to select a location
 				</div>
 			</div>
@@ -285,7 +285,7 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
 			</div>
 
 			{currentLocation.latitude && currentLocation.longitude && (
-				<div className="text-xs text-gray-500">
+				<div className="text-xs text-muted-foreground">
 					Selected: {currentLocation.latitude.toFixed(6)},{" "}
 					{currentLocation.longitude.toFixed(6)}
 				</div>

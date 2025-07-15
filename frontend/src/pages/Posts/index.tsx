@@ -26,6 +26,7 @@ export default function PostsPage() {
 		(state: RootState) => state.auth.isAuthenticated,
 	);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: ignore useEffect dependencies
 	useEffect(() => {
 		loadPosts();
 	}, []);
@@ -132,28 +133,28 @@ export default function PostsPage() {
 				{loading ? (
 					<div className="space-y-4">
 						{[...Array(3)].map((_, i) => (
-							<div key={`loading-${i}`} className="animate-pulse">
-								<div className="bg-white rounded-lg border p-6">
+							<div key={`loading-${i.toString()}`} className="animate-pulse">
+								<div className="bg-card rounded-lg border p-6">
 									<div className="flex items-center space-x-3 mb-4">
-										<div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+										<div className="w-10 h-10 bg-muted rounded-full"></div>
 										<div className="space-y-2">
-											<div className="h-4 bg-gray-200 rounded w-32"></div>
-											<div className="h-3 bg-gray-200 rounded w-24"></div>
+											<div className="h-4 bg-muted rounded w-32"></div>
+											<div className="h-3 bg-muted rounded w-24"></div>
 										</div>
 									</div>
 									<div className="space-y-2 mb-4">
-										<div className="h-4 bg-gray-200 rounded w-full"></div>
-										<div className="h-4 bg-gray-200 rounded w-3/4"></div>
+										<div className="h-4 bg-muted rounded w-full"></div>
+										<div className="h-4 bg-muted rounded w-3/4"></div>
 									</div>
-									<div className="h-32 bg-gray-200 rounded"></div>
+									<div className="h-32 bg-muted rounded"></div>
 								</div>
 							</div>
 						))}
 					</div>
 				) : posts.length === 0 ? (
 					<div className="text-center py-12">
-						<div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-							<Plus className="h-8 w-8 text-gray-400" />
+						<div className="mx-auto w-24 h-24 bg-muted rounded-full flex items-center justify-center mb-4">
+							<Plus className="h-8 w-8 text-muted-foreground" />
 						</div>
 						<h3 className="text-lg font-semibold mb-2">No posts yet</h3>
 						<p className="text-muted-foreground mb-4">

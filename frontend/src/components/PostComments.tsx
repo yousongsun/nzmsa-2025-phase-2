@@ -36,6 +36,7 @@ export function PostComments({ postId }: PostCommentsProps) {
 
 	const currentUser = useSelector((state: RootState) => state.auth.user);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: ignore useEffect dependencies
 	useEffect(() => {
 		loadComments();
 	}, [postId]);
@@ -124,7 +125,10 @@ export function PostComments({ postId }: PostCommentsProps) {
 		return (
 			<div className="space-y-4">
 				{[...Array(2)].map((_, i) => (
-					<div key={`skeleton-${i}`} className="animate-pulse flex space-x-3">
+					<div
+						key={`skeleton-${i.toString()}`}
+						className="animate-pulse flex space-x-3"
+					>
 						<div className="w-8 h-8 bg-gray-200 rounded-full"></div>
 						<div className="flex-1 space-y-2">
 							<div className="h-4 bg-gray-200 rounded w-24"></div>

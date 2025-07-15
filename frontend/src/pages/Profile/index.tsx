@@ -161,7 +161,7 @@ const Profile = () => {
 		return (
 			<div className="container mx-auto p-4">
 				<div className="flex items-center justify-center min-h-[400px]">
-					<div className="text-lg text-gray-500">User not found</div>
+					<div className="text-lg text-muted-foreground">User not found</div>
 				</div>
 			</div>
 		);
@@ -182,7 +182,7 @@ const Profile = () => {
 								<CardTitle className="text-2xl">
 									{user.firstName} {user.lastName}
 								</CardTitle>
-								<p className="text-gray-500">{user.email}</p>
+								<p className="text-muted-foreground">{user.email}</p>
 							</div>
 						</div>
 						<div className="flex space-x-2">
@@ -274,7 +274,7 @@ const Profile = () => {
 				</CardHeader>
 				{user.description && (
 					<CardContent>
-						<p className="text-gray-700">{user.description}</p>
+						<p className="text-muted-foreground">{user.description}</p>
 					</CardContent>
 				)}
 			</Card>
@@ -289,7 +289,7 @@ const Profile = () => {
 						<div className="text-3xl font-bold text-blue-600">
 							{followers.length}
 						</div>
-						<div className="text-gray-500">Followers</div>
+						<div className="text-muted-foreground">Followers</div>
 					</CardContent>
 				</Card>
 				<Card
@@ -300,7 +300,7 @@ const Profile = () => {
 						<div className="text-3xl font-bold text-green-600">
 							{following.length}
 						</div>
-						<div className="text-gray-500">Following</div>
+						<div className="text-muted-foreground">Following</div>
 					</CardContent>
 				</Card>
 			</div>
@@ -313,13 +313,15 @@ const Profile = () => {
 					</DialogHeader>
 					<div className="max-h-80 overflow-y-auto">
 						{followers.length === 0 ? (
-							<p className="text-center text-gray-500 py-8">No followers yet</p>
+							<p className="text-center text-muted-foreground py-8">
+								No followers yet
+							</p>
 						) : (
 							<div className="space-y-2">
 								{followers.map((follower) => (
 									<div
 										key={follower.userId}
-										className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50"
+										className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted"
 									>
 										<div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
 											{follower.firstName.charAt(0)}
@@ -329,7 +331,7 @@ const Profile = () => {
 											<div className="font-medium">
 												{follower.firstName} {follower.lastName}
 											</div>
-											<div className="text-sm text-gray-500">
+											<div className="text-sm text-muted-foreground">
 												{follower.email}
 											</div>
 										</div>
@@ -349,7 +351,7 @@ const Profile = () => {
 					</DialogHeader>
 					<div className="max-h-80 overflow-y-auto">
 						{following.length === 0 ? (
-							<p className="text-center text-gray-500 py-8">
+							<p className="text-center text-muted-foreground py-8">
 								Not following anyone yet
 							</p>
 						) : (
@@ -357,7 +359,7 @@ const Profile = () => {
 								{following.map((followedUser) => (
 									<div
 										key={followedUser.userId}
-										className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50"
+										className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted"
 									>
 										<div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
 											{followedUser.firstName.charAt(0)}
@@ -367,7 +369,7 @@ const Profile = () => {
 											<div className="font-medium">
 												{followedUser.firstName} {followedUser.lastName}
 											</div>
-											<div className="text-sm text-gray-500">
+											<div className="text-sm text-muted-foreground">
 												{followedUser.email}
 											</div>
 										</div>
