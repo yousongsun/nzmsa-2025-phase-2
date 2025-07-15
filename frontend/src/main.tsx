@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App.tsx";
+import { ThemeProvider } from "./lib/theme";
 import { store } from "./redux/store";
 import "./index.css";
 
@@ -14,9 +15,11 @@ if (!rootElement) {
 createRoot(rootElement).render(
 	<StrictMode>
 		<Provider store={store}>
-			<BrowserRouter>
-				<App />
-			</BrowserRouter>
+			<ThemeProvider defaultTheme="system" storageKey="travel-app-theme">
+				<BrowserRouter>
+					<App />
+				</BrowserRouter>
+			</ThemeProvider>
 		</Provider>
 	</StrictMode>,
 );

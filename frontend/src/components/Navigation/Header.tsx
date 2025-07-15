@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { cn } from "@/lib/utils";
 import { logout } from "@/redux/slices/authSlice";
 import type { RootState } from "@/redux/store";
@@ -121,6 +122,9 @@ export function Header({ onMenuClick, className }: HeaderProps) {
 					<Search className="w-4 h-4" />
 					<span className="sr-only">Search</span>
 				</Button> */}
+
+				{/* Theme Toggle */}
+				<ThemeToggle />
 
 				{/* Notifications */}
 				<div className="relative">
