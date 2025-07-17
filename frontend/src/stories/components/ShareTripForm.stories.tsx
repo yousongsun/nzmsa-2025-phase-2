@@ -31,7 +31,8 @@ export const Default: Story = {
 	args: {
 		tripId: 1,
 		tripName: "Amazing Trip to New Zealand",
-		onSharedTripCreated: (sharedTrip) => console.log("Shared trip created:", sharedTrip),
+		onSharedTripCreated: (sharedTrip) =>
+			console.log("Shared trip created:", sharedTrip),
 		trigger: <button type="button">Share Trip</button>,
 	},
 };
@@ -40,6 +41,7 @@ export const WithoutTrigger: Story = {
 	args: {
 		tripId: 2,
 		tripName: "European Adventure",
-		onSharedTripCreated: (sharedTrip) => console.log("Shared trip created:", sharedTrip),
+		onSharedTripCreated: (sharedTrip) =>
+			console.log("Shared trip created:", sharedTrip),
 	},
 };

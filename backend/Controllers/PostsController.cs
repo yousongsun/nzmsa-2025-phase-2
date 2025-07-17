@@ -149,6 +149,7 @@ namespace backend.Controllers
             post.Content = request.Content ?? post.Content;
             post.Privacy = request.Privacy ?? post.Privacy;
             post.TripId = request.TripId ?? post.TripId;
+            post.UpdatedAt = DateTime.UtcNow;
 
             // Handle new image upload
             if (request.Image != null && request.Image.Length > 0)
@@ -274,8 +275,7 @@ namespace backend.Controllers
         public async Task<IActionResult> UpdateComment(long commentId, [FromBody] UpdateCommentRequest request)
         {
             var userId = GetCurrentUserId();
-            var comment = await _postRepository.GetCommentsAsync(commentId);
-            var targetComment = comment.FirstOrDefault(c => c.PostCommentId == commentId);
+            var targetComment = await _postRepository.GetCommentByIdAsync(commentId);
 
             if (targetComment == null)
             {
@@ -288,6 +288,7 @@ namespace backend.Controllers
             }
 
             targetComment.Content = request.Content;
+            targetComment.UpdatedAt = DateTime.UtcNow;
             await _postRepository.UpdateCommentAsync(targetComment);
             return NoContent();
         }
@@ -296,8 +297,7 @@ namespace backend.Controllers
         public async Task<IActionResult> DeleteComment(long commentId)
         {
             var userId = GetCurrentUserId();
-            var comment = await _postRepository.GetCommentsAsync(commentId);
-            var targetComment = comment.FirstOrDefault(c => c.PostCommentId == commentId);
+            var targetComment = await _postRepository.GetCommentByIdAsync(commentId);
 
             if (targetComment == null)
             {

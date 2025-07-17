@@ -73,6 +73,14 @@ export default function PostsPage() {
 		}
 	};
 
+	const handlePostUpdated = (updatedPost: Post) => {
+		setPosts((currentPosts) =>
+			currentPosts.map((post) =>
+				post.postId === updatedPost.postId ? updatedPost : post,
+			),
+		);
+	};
+
 	return (
 		<div className="container mx-auto px-4 py-8 max-w-4xl">
 			<div className="flex items-center justify-between mb-6">
@@ -173,6 +181,7 @@ export default function PostsPage() {
 							key={post.postId}
 							post={post}
 							onPostDeleted={handlePostDeleted}
+							onPostUpdated={handlePostUpdated}
 						/>
 					))
 				)}

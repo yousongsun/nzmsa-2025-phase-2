@@ -19,6 +19,7 @@ namespace backend.Repositories.Abstract
         Task<PostLike> AddLikeAsync(PostLike like);
         Task RemoveLikeAsync(long postId, long userId);
         Task<IEnumerable<PostComment>> GetCommentsAsync(long postId);
+        Task<PostComment?> GetCommentByIdAsync(long commentId);
         Task<PostComment> AddCommentAsync(PostComment comment);
         Task<PostComment> UpdateCommentAsync(PostComment comment);
         Task DeleteCommentAsync(long commentId);

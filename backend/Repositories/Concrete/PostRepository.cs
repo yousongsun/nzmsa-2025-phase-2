@@ -177,6 +177,13 @@ namespace backend.Repositories.Concrete
                 .ToListAsync();
         }
 
+        public async Task<PostComment?> GetCommentByIdAsync(long commentId)
+        {
+            return await _context.PostComments
+                .Include(c => c.User)
+                .FirstOrDefaultAsync(c => c.PostCommentId == commentId);
+        }
+
         public async Task<PostComment> AddCommentAsync(PostComment comment)
         {
             comment.CreatedAt = DateTime.UtcNow;

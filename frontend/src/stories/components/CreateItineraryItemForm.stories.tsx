@@ -32,13 +32,15 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
 	args: {
 		tripId: 1,
-		onItineraryItemCreated: (item) => console.log("Itinerary item created:", item),
+		onItineraryItemCreated: (item) =>
+			console.log("Itinerary item created:", item),
 	},
 };
 
 export const DifferentTrip: Story = {
 	args: {
 		tripId: 2,
-		onItineraryItemCreated: (item) => console.log("Itinerary item created:", item),
+		onItineraryItemCreated: (item) =>
+			console.log("Itinerary item created:", item),
 	},
 };

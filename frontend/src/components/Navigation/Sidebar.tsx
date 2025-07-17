@@ -118,7 +118,7 @@ export function Sidebar({
 							<MapPin className="w-4 h-4 text-white" />
 						</div>
 						<span className="font-bold text-lg bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-							TripShare
+							Travel Networking
 						</span>
 					</div>
 				)}

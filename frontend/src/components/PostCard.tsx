@@ -10,6 +10,8 @@ import {
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { EditPostForm } from "@/components/EditPostForm";
+import { PostComments } from "@/components/PostComments";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -35,14 +37,21 @@ import { likePost, unlikePost } from "@/services/PostService";
 interface PostCardProps {
 	post: Post;
 	onPostDeleted?: (postId: number) => void;
+	onPostUpdated?: (post: Post) => void;
 }
 
-export function PostCard({ post, onPostDeleted }: PostCardProps) {
+export function PostCard({
+	post,
+	onPostDeleted,
+	onPostUpdated,
+}: PostCardProps) {
 	const [isLiked, setIsLiked] = useState(false);
 	const [likeCount, setLikeCount] = useState(post.likeCount);
 	const [showComments, setShowComments] = useState(false);
 	const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+	const [showEditDialog, setShowEditDialog] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [currentPost, setCurrentPost] = useState(post);
 
 	const currentUser = useSelector((state: RootState) => state.auth.user);
 	const isOwnPost = currentUser?.userId === post.userId;
@@ -82,6 +91,14 @@ export function PostCard({ post, onPostDeleted }: PostCardProps) {
 		setShowDeleteDialog(false);
 	};
 
+	const handlePostUpdated = (updatedPost: Post) => {
+		setCurrentPost(updatedPost);
+		setShowEditDialog(false);
+		if (onPostUpdated) {
+			onPostUpdated(updatedPost);
+		}
+	};
+
 	const getPrivacyBadge = (privacy: PostPrivacy) => {
 		switch (privacy) {
 			case PostPrivacy.Public:
@@ -105,32 +122,35 @@ export function PostCard({ post, onPostDeleted }: PostCardProps) {
 				<div className="flex items-start justify-between">
 					<div className="flex items-center space-x-3">
 						<Avatar>
-							<AvatarImage src={post.userProfilePicture} />
+							<AvatarImage src={currentPost.userProfilePicture} />
 							<AvatarFallback>
-								{getInitials(post.userFirstName, post.userLastName)}
+								{getInitials(
+									currentPost.userFirstName,
+									currentPost.userLastName,
+								)}
 							</AvatarFallback>
 						</Avatar>
 						<div>
 							<div className="flex items-center space-x-2">
 								<Link
-									to={`/profile/${post.userId}`}
+									to={`/profile/${currentPost.userId}`}
 									className="font-semibold hover:underline hover:text-primary transition-colors"
 								>
-									{post.userFirstName} {post.userLastName}
+									{currentPost.userFirstName} {currentPost.userLastName}
 								</Link>
-								{getPrivacyBadge(post.privacy)}
+								{getPrivacyBadge(currentPost.privacy)}
 							</div>
 							<div className="flex items-center space-x-2 text-sm text-muted-foreground">
 								<span>
-									{formatDistanceToNow(new Date(post.createdAt), {
+									{formatDistanceToNow(new Date(currentPost.createdAt), {
 										addSuffix: true,
 									})}
 								</span>
-								{post.updatedAt && <span>• Edited</span>}
-								{post.tripName && (
+								{currentPost.updatedAt && <span>• Edited</span>}
+								{currentPost.tripName && (
 									<div className="flex items-center space-x-1">
 										<MapPin className="h-3 w-3" />
-										<span>{post.tripName}</span>
+										<span>{currentPost.tripName}</span>
 									</div>
 								)}
 							</div>
@@ -145,9 +165,7 @@ export function PostCard({ post, onPostDeleted }: PostCardProps) {
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="end">
-								<DropdownMenuItem
-									onClick={() => alert("Edit functionality coming soon!")}
-								>
+								<DropdownMenuItem onClick={() => setShowEditDialog(true)}>
 									<Edit className="h-4 w-4 mr-2" />
 									Edit Post
 								</DropdownMenuItem>
@@ -167,15 +185,15 @@ export function PostCard({ post, onPostDeleted }: PostCardProps) {
 			<CardContent className="space-y-4">
 				{/* Post content */}
 				<div className="prose prose-sm max-w-none">
-					<p className="whitespace-pre-wrap">{post.content}</p>
+					<p className="whitespace-pre-wrap">{currentPost.content}</p>
 				</div>
 
 				{/* Post image */}
-				{post.imageUrl && (
+				{currentPost.imageUrl && (
 					<div className="rounded-lg overflow-hidden">
 						<img
-							src={`${import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5042"}${post.imageUrl}`}
-							alt={post.imageAltText || "Post image"}
+							src={`${import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5042"}${currentPost.imageUrl}`}
+							alt={currentPost.imageAltText || "Post image"}
 							className="w-full h-auto object-cover max-h-96"
 						/>
 					</div>
@@ -203,20 +221,35 @@ export function PostCard({ post, onPostDeleted }: PostCardProps) {
 							onClick={() => setShowComments(!showComments)}
 						>
 							<MessageCircle className="h-4 w-4 mr-1" />
-							{post.commentCount}
+							{currentPost.commentCount}
 						</Button>
 					</div>
 				</div>
 
-				{/* Comments section - simplified */}
+				{/* Comments section */}
 				{showComments && (
 					<div className="pt-4 border-t">
-						<p className="text-sm text-muted-foreground text-center py-4">
-							Comments functionality coming soon!
-						</p>
+						<PostComments postId={currentPost.postId} />
 					</div>
 				)}
 			</CardContent>
+
+			{/* Edit Post Dialog */}
+			<Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+				<DialogContent className="max-w-2xl max-h-screen overflow-y-auto">
+					<DialogHeader>
+						<DialogTitle>Edit Post</DialogTitle>
+						<DialogDescription>
+							Make changes to your post and save when you're done.
+						</DialogDescription>
+					</DialogHeader>
+					<EditPostForm
+						post={currentPost}
+						onPostUpdated={handlePostUpdated}
+						onCancel={() => setShowEditDialog(false)}
+					/>
+				</DialogContent>
+			</Dialog>
 
 			{/* Delete confirmation dialog */}
 			<Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
