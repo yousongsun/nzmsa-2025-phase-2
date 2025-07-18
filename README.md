@@ -77,14 +77,31 @@ To run this project locally, you'll need to have Docker and Docker Compose insta
 2.  **Run with Docker Compose:**
     ```bash
     docker compose up --build
-    ```
 
-3.  **Access the application:**
-    -   Using: `http://localhost:3000`
+    ```
+    Access Using: `http://localhost:3000`
+
+
+3.  **Run locally:**
+    -   Start the backend
+        ```bash
+        cd backend
+        dotnet run
+        ```
+    -   Start the frontend
+        ```bash
+        cd frontend
+        npm install
+        npm run dev
+        ```
+    Access Using: `http://localhost:5173`
+
+
+4.  **Access the deployed application:**
     -   Deployed: [https://nzmsa.pharma.host](https://nzmsa.pharma.host)
 
 
-4. **Demo Users**
+5. **Demo Users**
 
     Here are five demo user accounts you can use to test the app:
 

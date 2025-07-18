@@ -1,7 +1,9 @@
 using backend.Models;
 using backend.Repositories.Abstract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace backend.Controllers
@@ -50,8 +52,23 @@ namespace backend.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Trip>> PostTrip(Trip trip)
         {
+            if (trip.UserId == 0)
+            {
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                    ?? User.FindFirst("nameid")?.Value
+                    ?? User.FindFirst("userid")?.Value;
+
+                if (string.IsNullOrEmpty(userIdClaim) || !long.TryParse(userIdClaim, out var userId))
+                {
+                    return Unauthorized("Invalid user token");
+                }
+
+                trip.UserId = userId;
+            }
+
             await _tripRepository.AddAsync(trip);
 
             return CreatedAtAction(nameof(GetTrip), new { id = trip.TripId }, trip);
